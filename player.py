@@ -5,10 +5,15 @@ class Player:
         self.image = pygame.image.load(os.path.join('images', 'player.png'))
         self.rect = self.image.get_rect()
 
+        self.collision_box = pygame.surface.Surface((40, 40))
+        self.collision_rect = self.collision_box.get_rect()
+
         self.x = coordinates[0]
         self.y = coordinates[1]
 
         self.rect.topleft = (self.x, self.y)
+        self.collision_rect.topleft = (self.x, self.y + 40)
+
 
         self.has_plate = has_plate
 

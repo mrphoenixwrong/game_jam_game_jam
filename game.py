@@ -11,6 +11,7 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Game Jam Game")
 
 TILE_SIZE = 50
+PLAYER_SIZE = 40
 
 class World:
     def __init__(self, world_data):
@@ -20,7 +21,7 @@ class World:
         for row in world_data:
             current_col = 0
             for tile in row:
-                if "floor" in tile:
+                if "floor" in tile or "chair" in tile:
                     tile = Tile(tile, (current_col * TILE_SIZE, current_row * TILE_SIZE), False)
                 else:
                     tile = Tile(tile, (current_col * TILE_SIZE, current_row * TILE_SIZE), True)
@@ -61,56 +62,81 @@ def game_loop():
         
         if key_pressed_is[K_LEFT] or key_pressed_is[K_a]:
             player.rect.x -= 0.3 * dt
+            player.collision_rect.x -= 0.3 * dt
         if key_pressed_is[K_RIGHT] or key_pressed_is[K_d]:
             player.rect.x += 0.3 * dt
+            player.collision_rect.x += 0.3 * dt
         if key_pressed_is[K_UP] or key_pressed_is[K_w]:
             player.rect.y -= 0.3 * dt
+            player.collision_rect.y -= 0.3 * dt
         if key_pressed_is[K_DOWN] or key_pressed_is[K_s]:
             player.rect.y += 0.3 * dt
+            player.collision_rect.y += 0.3 * dt
 
         # Collision Detection
-        for tile in world.tiles:
-            # Collide with left side of tile
-            if player.rect.collidepoint((tile.x, tile.y + TILE_SIZE/2)) and tile.collision:
-                player.rect.x = tile.x - TILE_SIZE
-            # Collide with right side of tile
-            if player.rect.collidepoint((tile.x + TILE_SIZE, tile.y + TILE_SIZE/2)) and tile.collision:
-                player.rect.x = tile.x + TILE_SIZE
-            # Collide with top of tile
-            if player.rect.collidepoint((tile.x + TILE_SIZE/2, tile.y)) and tile.collision:
-                player.rect.y = tile.y - TILE_SIZE
-            # Collide with bottom of tile
-            if player.rect.collidepoint((tile.x + TILE_SIZE/2, tile.y + TILE_SIZE)) and tile.collision:
-                player.rect.y = tile.y + TILE_SIZE
+        print(player.rect.topleft)
+        print((player.collision_rect.left, player.collision_rect.top - 40))
 
+        for tile in world.tiles:
+            # SIDE COLLISIONS
+            # Collide with left side of tile
+            if player.collision_rect.collidepoint((tile.rect.left, tile.rect.centery)) and tile.collision:
+                player.rect.x = tile.x - PLAYER_SIZE
+                player.collision_rect.x = tile.x - PLAYER_SIZE
+            # Collide with right side of tile
+            if player.collision_rect.collidepoint((tile.rect.right, tile.rect.centery)) and tile.collision:
+                player.rect.x = tile.x + TILE_SIZE
+                player.collision_rect.x = tile.x + TILE_SIZE
+            # Collide with top of tile
+            if player.rect.collidepoint((tile.rect.centerx, tile.rect.top)) and tile.collision:
+                player.rect.y = tile.y - PLAYER_SIZE * 2
+                player.collision_rect.y = tile.y - PLAYER_SIZE
+            # Collide with bottom of tile
+            if player.collision_rect.collidepoint((tile.rect.centerx, tile.rect.bottom)) and tile.collision:
+                player.rect.y = tile.y + TILE_SIZE - PLAYER_SIZE
+                player.collision_rect.y = tile.y + TILE_SIZE
+
+            # CORNER COLLISIONS
             # Collide with topleft side of tile
-            if player.rect.collidepoint((tile.x, tile.y)) and tile.collision:
-                #  Player distance left > Player distance top
-                if tile.x - player.rect.x > tile.y - player.rect.y:
-                    player.rect.x = tile.x - TILE_SIZE
-                else:
-                    player.rect.y = tile.y - TILE_SIZE
-            # Collide with topright side of tile
-            if player.rect.collidepoint((tile.x + TILE_SIZE - 1, tile.y)) and tile.collision:
-                #  Player distance right > Player distance top
-                if player.rect.x - tile.x > tile.y - player.rect.y:
-                    player.rect.x = tile.x + TILE_SIZE
-                else:
-                    player.rect.y = tile.y - TILE_SIZE
+            if player.collision_rect.collidepoint(tile.rect.topleft) and tile.collision:
+                # Pushing right = go left
+                if tile.rect.left - player.collision_rect.left > tile.rect.top - player.collision_rect.top:
+                    player.rect.right = tile.rect.left
+                    player.collision_rect.right = tile.rect.left
+                # Pushing down = go up
+                if tile.rect.left - player.collision_rect.left < tile.rect.top - player.collision_rect.top:
+                    player.rect.bottom = tile.rect.top 
+                    player.collision_rect.bottom = tile.rect.top
+            # Collide with topright of tile
+            if player.collision_rect.collidepoint(tile.rect.topright) and tile.collision:
+                # Pushing left = go right
+                if player.collision_rect.right - tile.rect.right > tile.rect.top - player.collision_rect.top:
+                    player.rect.left = tile.rect.right
+                    player.collision_rect.left = tile.rect.right
+                # Pushing down = go up
+                if player.collision_rect.right - tile.rect.right < tile.rect.top - player.collision_rect.top:
+                    player.rect.bottom = tile.rect.top
+                    player.collision_rect.bottom = tile.rect.top
             # Collide with bottomleft of tile
-            if player.rect.collidepoint((tile.x, tile.y + TILE_SIZE - 1)) and tile.collision:
-                #  Player distance left > Player distance bottom
-                if tile.x - player.rect.x > player.rect.y - tile.y:
-                    player.rect.x = tile.x - TILE_SIZE
-                else:
-                    player.rect.y = tile.y + TILE_SIZE
+            if player.collision_rect.collidepoint(tile.rect.bottomleft) and tile.collision:
+                # Pushing right = go left
+                if tile.rect.left - player.collision_rect.left > player.collision_rect.bottom - tile.rect.bottom:
+                    player.rect.right = tile.rect.left
+                    player.collision_rect.right = tile.rect.left
+                # Pushing up = go down
+                if tile.rect.left - player.collision_rect.left < player.collision_rect.bottom - tile.rect.bottom:
+                    player.rect.top = tile.rect.bottom - PLAYER_SIZE
+                    player.collision_rect.top = tile.rect.bottom
             # Collide with bottomright of tile
-            if player.rect.collidepoint((tile.x + TILE_SIZE - 1, tile.y + TILE_SIZE - 1)) and tile.collision:
-                #  Player distance right > Player distance bottom
-                if player.rect.x - tile.x > player.rect.y - tile.y:
-                    player.rect.x = tile.x + TILE_SIZE
-                else:
-                    player.rect.y = tile.y + TILE_SIZE
+            if player.collision_rect.collidepoint(tile.rect.bottomright) and tile.collision:
+                # Pushing left = go right
+                if player.collision_rect.right - tile.rect.right > player.collision_rect.bottom - tile.rect.bottom:
+                    player.rect.left = tile.rect.right
+                    player.collision_rect.left = tile.rect.right
+                # Pushing up = go down
+                if player.collision_rect.right - tile.rect.right < player.collision_rect.bottom - tile.rect.bottom:
+                    player.rect.top = tile.rect.bottom - PLAYER_SIZE
+                    player.collision_rect.top = tile.rect.bottom
 
         window.blit(player.image, player.rect)
 
