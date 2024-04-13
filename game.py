@@ -6,6 +6,9 @@ from player import Player
 from lists import *
 from npc import NonPlayerCharacter
 
+from chef import Chef
+from random import randint, choice
+
 pygame.init()
 
 WIDTH, HEIGHT = 1000, 600
@@ -50,6 +53,10 @@ clock = pygame.time.Clock()
 def game_loop():
     world, RUNNING = createWorld()
     player = Player((850,450), 0.25, False)
+    chef = Chef((750,200))
+    direction = choice(["left", "right"])
+    chef_move_count = 0
+    
     customers = []
     foods = []
 
@@ -223,6 +230,8 @@ def game_loop():
             for customer in customers:
                 window.blit(customer.image, customer.rect)
         window.blit(player.image, player.rect)
+        window.blit(chef.image, chef.rect)
+        
 
         pygame.display.update()
 
