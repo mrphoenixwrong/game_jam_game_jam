@@ -1,8 +1,10 @@
-import pygame, os, json
+import pygame, os, json, datetime, random
 from pygame.locals import *
 
 from tile import Tile
 from player import Player
+from lists import *
+from npc import NonPlayerCharacter
 
 pygame.init()
 
@@ -11,6 +13,7 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Game Jam Game")
 
 TILE_SIZE = 50
+PLAYER_SIZE = 40
 
 class World:
     def __init__(self, world_data):
@@ -20,10 +23,10 @@ class World:
         for row in world_data:
             current_col = 0
             for tile in row:
-                if "floor" in tile:
+                if "floor" in tile or "chair" in tile:
                     tile = Tile(tile, (current_col * TILE_SIZE, current_row * TILE_SIZE), False)
                 else:
-                    tile = Tile(tile, (current_col * TILE_SIZE, current_row * TILE_SIZE), False)
+                    tile = Tile(tile, (current_col * TILE_SIZE, current_row * TILE_SIZE), True)
                 self.tiles.append(tile)
                 current_col += 1
             current_row += 1
@@ -46,7 +49,12 @@ clock = pygame.time.Clock()
 
 def game_loop():
     world, RUNNING = createWorld()
-    player = Player((0,0), False)
+    player = Player((850,450), 0.25, False)
+    customers = []
+
+    last_second = int(datetime.datetime.now().strftime("%S"))
+    sit_clock = 0
+    sit_goal = random.randint(3, 7)
 
     while RUNNING:
         dt = clock.tick(60)
@@ -60,23 +68,110 @@ def game_loop():
         key_pressed_is = pygame.key.get_pressed()
         
         if key_pressed_is[K_LEFT] or key_pressed_is[K_a]:
-            player.rect.x -= 0.3 * dt
+            player.rect.x -= player.speed * dt
+            player.collision_rect.x -= player.speed * dt
         if key_pressed_is[K_RIGHT] or key_pressed_is[K_d]:
-            player.rect.x += 0.3 * dt
+            player.rect.x += player.speed * dt
+            player.collision_rect.x += player.speed * dt
         if key_pressed_is[K_UP] or key_pressed_is[K_w]:
-            player.rect.y -= 0.3 * dt
+            player.rect.y -= player.speed * dt
+            player.collision_rect.y -= player.speed * dt
         if key_pressed_is[K_DOWN] or key_pressed_is[K_s]:
-            player.rect.y += 0.3 * dt
+            player.rect.y += player.speed * dt
+            player.collision_rect.y += player.speed * dt
+        if key_pressed_is[K_e]:
+            for customer in customers:
+                if player.collision_rect.centerx > customer.rect.centerx - 50 and player.collision_rect.centerx < customer.rect.centerx + 50:
+                    if player.collision_rect.centery > customer.rect.centery - 50 and player.collision_rect.centery < customer.rect.centery + 50:
+                        if customer.order_status == "ready to order":
+                            customer.order_taken()
 
-        if player.rect.x < TILE_SIZE:
-            player.rect.x = TILE_SIZE
-        if player.rect.x > WIDTH - 2 * TILE_SIZE:
-            player.rect.x = WIDTH - 2 * TILE_SIZE
-        if player.rect.y < 2 * TILE_SIZE:
-            player.rect.y = 2 * TILE_SIZE
-        if player.rect.y > HEIGHT - 2 * TILE_SIZE:
-            player.rect.y = HEIGHT - 2 * TILE_SIZE
 
+        # Collision Detection
+        for tile in world.tiles:
+            # SIDE COLLISIONS
+            # Collide with left side of tile
+            if player.collision_rect.collidepoint((tile.rect.left, tile.rect.centery)) and tile.collision:
+                player.rect.x = tile.x - PLAYER_SIZE
+                player.collision_rect.x = tile.x - PLAYER_SIZE
+            # Collide with right side of tile
+            if player.collision_rect.collidepoint((tile.rect.right, tile.rect.centery)) and tile.collision:
+                player.rect.x = tile.x + TILE_SIZE
+                player.collision_rect.x = tile.x + TILE_SIZE
+            # Collide with top of tile
+            if player.rect.collidepoint((tile.rect.centerx, tile.rect.top)) and tile.collision:
+                player.rect.y = tile.y - PLAYER_SIZE * 2
+                player.collision_rect.y = tile.y - PLAYER_SIZE
+            # Collide with bottom of tile
+            if player.collision_rect.collidepoint((tile.rect.centerx, tile.rect.bottom)) and tile.collision:
+                player.rect.y = tile.y + TILE_SIZE - PLAYER_SIZE
+                player.collision_rect.y = tile.y + TILE_SIZE
+
+            # CORNER COLLISIONS
+            # Collide with topleft side of tile
+            if player.collision_rect.collidepoint(tile.rect.topleft) and tile.collision:
+                # Pushing right = go left
+                if tile.rect.left - player.collision_rect.left > tile.rect.top - player.collision_rect.top:
+                    player.rect.right = tile.rect.left
+                    player.collision_rect.right = tile.rect.left
+                # Pushing down = go up
+                if tile.rect.left - player.collision_rect.left < tile.rect.top - player.collision_rect.top:
+                    player.rect.bottom = tile.rect.top 
+                    player.collision_rect.bottom = tile.rect.top
+            # Collide with topright of tile
+            if player.collision_rect.collidepoint(tile.rect.topright) and tile.collision:
+                # Pushing left = go right
+                if player.collision_rect.right - tile.rect.right > tile.rect.top - player.collision_rect.top:
+                    player.rect.left = tile.rect.right
+                    player.collision_rect.left = tile.rect.right
+                # Pushing down = go up
+                if player.collision_rect.right - tile.rect.right < tile.rect.top - player.collision_rect.top:
+                    player.rect.bottom = tile.rect.top
+                    player.collision_rect.bottom = tile.rect.top
+            # Collide with bottomleft of tile
+            if player.collision_rect.collidepoint(tile.rect.bottomleft) and tile.collision:
+                # Pushing right = go left
+                if tile.rect.left - player.collision_rect.left > player.collision_rect.bottom - tile.rect.bottom:
+                    player.rect.right = tile.rect.left
+                    player.collision_rect.right = tile.rect.left
+                # Pushing up = go down
+                if tile.rect.left - player.collision_rect.left < player.collision_rect.bottom - tile.rect.bottom:
+                    player.rect.top = tile.rect.bottom - PLAYER_SIZE
+                    player.collision_rect.top = tile.rect.bottom
+            # Collide with bottomright of tile
+            if player.collision_rect.collidepoint(tile.rect.bottomright) and tile.collision:
+                # Pushing left = go right
+                if player.collision_rect.right - tile.rect.right > player.collision_rect.bottom - tile.rect.bottom:
+                    player.rect.left = tile.rect.right
+                    player.collision_rect.left = tile.rect.right
+                # Pushing up = go down
+                if player.collision_rect.right - tile.rect.right < player.collision_rect.bottom - tile.rect.bottom:
+                    player.rect.top = tile.rect.bottom - PLAYER_SIZE
+                    player.collision_rect.top = tile.rect.bottom
+
+        now = int(datetime.datetime.now().strftime("%S"))
+        if now > last_second or (now == 0 and last_second == 59):
+            last_second = now
+            sit_clock += 1
+            print(sit_clock)
+            for customer in customers:
+                if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
+                    customer.anger -= 1
+                    if customer.anger == 0:
+                        customer.karen()
+                if customer.order_status == "just sat":
+                    customer.wait -= 1
+                    if customer.wait == 0:
+                        customer.ready_to_order()
+            if sit_clock >= sit_goal:
+                if len(customers) <= 10:
+                    customers.append(NonPlayerCharacter())
+                    sit_clock = 0
+                    sit_goal = random.randint(3, 7)
+
+        if len(customers) > 0:
+            for customer in customers:
+                window.blit(customer.image, customer.rect)
         window.blit(player.image, player.rect)
 
         pygame.display.update()
