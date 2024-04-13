@@ -79,6 +79,13 @@ def game_loop():
         if key_pressed_is[K_DOWN] or key_pressed_is[K_s]:
             player.rect.y += player.speed * dt
             player.collision_rect.y += player.speed * dt
+        if key_pressed_is[K_e]:
+            for customer in customers:
+                if player.collision_rect.centerx > customer.rect.centerx - 50 and player.collision_rect.centerx < customer.rect.centerx + 50:
+                    if player.collision_rect.centery > customer.rect.centery - 50 and player.collision_rect.centery < customer.rect.centery + 50:
+                        if customer.order_status == "ready to order":
+                            customer.order_taken()
+
 
         # Collision Detection
         for tile in world.tiles:
@@ -148,9 +155,14 @@ def game_loop():
             sit_clock += 1
             print(sit_clock)
             for customer in customers:
-                customer.anger += 1
-                if customer.anger == 10:
-                    customer.karen()
+                if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
+                    customer.anger -= 1
+                    if customer.anger == 0:
+                        customer.karen()
+                if customer.order_status == "just sat":
+                    customer.wait -= 1
+                    if customer.wait == 0:
+                        customer.ready_to_order()
             if sit_clock >= sit_goal:
                 if len(customers) <= 10:
                     customers.append(NonPlayerCharacter())
