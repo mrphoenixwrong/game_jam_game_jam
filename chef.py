@@ -1,7 +1,7 @@
 import pygame, random
 
-class Chef:
-    
+
+class Chef:  
 
     def __init__(self,coordinates):
         miku = pygame.image.load("unused sprites/mikudayo.png")
@@ -16,17 +16,10 @@ class Chef:
 
         self.rect.topleft = (self.x, self.y)
 
-    def cookin(self):
-        direction = random.choice(["left", "right"])
-        if direction == "right":
-            pass
-        else:
-            pass
 
-    def collision(self, other, distance):
-        #if abs(self.rect.x) - abs(other.rect.x) < 0 and self.rect.y - other.rect.y < 0:
-        if pygame.Rect.colliderect(self.rect, other.rect) == True:
-            other.rect.x += 1 
-            other.rect.y += 1
-            print("touch")
-            print(other.rect.x, other.rect.y)
+    def cookin(self, direction: str):
+        if direction == "right":
+            self.rect.x += .5
+        else:
+           self.rect.x -= .5
+           
