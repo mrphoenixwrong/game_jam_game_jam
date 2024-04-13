@@ -53,6 +53,7 @@ def game_loop():
     customers = []
 
     last_second = int(datetime.datetime.now().strftime("%S"))
+    last_milli = 0
     sit_clock = 0
     sit_goal = random.randint(3, 7)
 
@@ -70,9 +71,13 @@ def game_loop():
         if key_pressed_is[K_LEFT] or key_pressed_is[K_a]:
             player.rect.x -= player.speed * dt
             player.collision_rect.x -= player.speed * dt
+            if player.facing == "right":
+                player.turn()
         if key_pressed_is[K_RIGHT] or key_pressed_is[K_d]:
             player.rect.x += player.speed * dt
             player.collision_rect.x += player.speed * dt
+            if player.facing == "left":
+                player.turn()
         if key_pressed_is[K_UP] or key_pressed_is[K_w]:
             player.rect.y -= player.speed * dt
             player.collision_rect.y -= player.speed * dt
@@ -81,8 +86,8 @@ def game_loop():
             player.collision_rect.y += player.speed * dt
         if key_pressed_is[K_e]:
             for customer in customers:
-                if player.collision_rect.centerx > customer.rect.centerx - 50 and player.collision_rect.centerx < customer.rect.centerx + 50:
-                    if player.collision_rect.centery > customer.rect.centery - 50 and player.collision_rect.centery < customer.rect.centery + 50:
+                if player.collision_rect.centerx > customer.rect.centerx - TILE_SIZE and player.collision_rect.centerx < customer.rect.centerx + TILE_SIZE:
+                    if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE:
                         if customer.order_status == "ready to order":
                             customer.order_taken()
 
@@ -148,6 +153,17 @@ def game_loop():
                 if player.collision_rect.right - tile.rect.right < player.collision_rect.bottom - tile.rect.bottom:
                     player.rect.top = tile.rect.bottom - PLAYER_SIZE
                     player.collision_rect.top = tile.rect.bottom
+
+        current_milli = int(datetime.datetime.now().strftime("%f"))
+        print(current_milli)
+        if (current_milli == last_milli + 750000) or (current_milli > 0 and last_milli == 500000):
+            if last_milli == 0:
+                last_milli = 500000
+            elif last_milli == 500000:
+                last_milli = 0
+
+
+
 
         now = int(datetime.datetime.now().strftime("%S"))
         if now > last_second or (now == 0 and last_second == 59):
