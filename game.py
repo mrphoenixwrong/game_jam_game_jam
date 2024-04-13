@@ -218,8 +218,13 @@ def game_loop():
 
         if len(customers) > 0:
             for customer in customers:
-                window.blit(customer.image, customer.rect)
+                if customer.rect.y < player.rect.y:
+                    window.blit(customer.image, customer.rect)
         window.blit(player.image, player.rect)
+        if len(customers) > 0:
+            for customer in customers:
+                if customer.rect.y > player.rect.y:
+                    window.blit(customer.image, customer.rect)
 
         pygame.display.update()
 
