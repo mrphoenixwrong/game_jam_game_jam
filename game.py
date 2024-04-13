@@ -92,20 +92,20 @@ def game_loop():
             # SIDE COLLISIONS
             # Collide with left side of tile
             if player.collision_rect.collidepoint((tile.rect.left, tile.rect.centery)) and tile.collision:
-                player.rect.x = tile.x - PLAYER_SIZE
-                player.collision_rect.x = tile.x - PLAYER_SIZE
+                player.rect.right = tile.rect.left
+                player.collision_rect.right = tile.rect.left
             # Collide with right side of tile
             if player.collision_rect.collidepoint((tile.rect.right, tile.rect.centery)) and tile.collision:
-                player.rect.x = tile.x + TILE_SIZE
-                player.collision_rect.x = tile.x + TILE_SIZE
+                player.rect.left = tile.rect.right
+                player.collision_rect.left = tile.rect.right
             # Collide with top of tile
             if player.rect.collidepoint((tile.rect.centerx, tile.rect.top)) and tile.collision:
-                player.rect.y = tile.y - PLAYER_SIZE * 2
-                player.collision_rect.y = tile.y - PLAYER_SIZE
+                player.rect.bottom = tile.rect.top
+                player.collision_rect.bottom = tile.rect.top
             # Collide with bottom of tile
             if player.collision_rect.collidepoint((tile.rect.centerx, tile.rect.bottom)) and tile.collision:
-                player.rect.y = tile.y + TILE_SIZE - PLAYER_SIZE
-                player.collision_rect.y = tile.y + TILE_SIZE
+                player.rect.top = tile.rect.bottom - PLAYER_SIZE
+                player.collision_rect.top = tile.rect.bottom
 
             # CORNER COLLISIONS
             # Collide with topleft side of tile
