@@ -38,3 +38,7 @@ FOOD_SPAWNS = [
     (700, 250),
     (700, 300)
 ]
+
+CHARACTERS = [
+    "manly"
+]

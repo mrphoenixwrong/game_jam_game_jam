@@ -1,15 +1,13 @@
 import pygame
 import os
 from random import randint, choice
-from lists import *
+from lists import CHAIRS, ORDERS, CHARACTERS
 
 class NonPlayerCharacter:
     
     def __init__(self):
-        self.image = pygame.image.load(os.path.join('images\\NPCs', 'npc.png'))
-        self.rect = self.image.get_rect()
-
-        self.rect.topleft = self.sit_down()
+        self.character = choice(CHARACTERS)
+        self.sit_down()
 
     # will use choice to pick a random key from the paths dictionary and go sit in the chair
     def sit_down(self):
@@ -20,7 +18,18 @@ class NonPlayerCharacter:
         chair = choice(CHAIRS)
         index = CHAIRS.index(chair)
         CHAIRS.pop(index)
-        return (chair[0], chair[1])
+        if chair[2] == "Right":
+            self.default_image = pygame.transform.flip(pygame.image.load(os.path.join('images\\NPCs', f'{self.character}Side.png')), True, False)
+            self.rect = self.default_image.get_rect()
+        elif chair[2] == "Left":
+            self.default_image = pygame.image.load(os.path.join('images\\NPCs', f'{self.character}Side.png'))
+            self.rect = self.default_image.get_rect()
+        else:
+            self.default_image = pygame.image.load(os.path.join('images\\NPCs', f'{self.character}{chair[2]}.png'))
+            self.rect = self.default_image.get_rect()
+        self.rect.topleft = (chair[0], chair[1]-40)
+
+        self.image = self.default_image
 
     def ready_to_order(self):
         self.order_status = "ready to order"
@@ -40,7 +49,7 @@ class NonPlayerCharacter:
 
         coordinates = self.rect.topleft
 
-        self.image = pygame.image.load(os.path.join('images\\NPCs', 'npc.png'))
+        self.image = self.default_image
         self.rect = self.image.get_rect()
         self.rect.topleft = coordinates
 

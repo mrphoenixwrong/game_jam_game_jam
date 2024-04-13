@@ -190,9 +190,6 @@ def game_loop():
             player.walking = False
             player.walk()
 
-
-
-
         now = int(datetime.datetime.now().strftime("%S"))
         if now > last_second or (now == 0 and last_second == 59):
             last_second = now

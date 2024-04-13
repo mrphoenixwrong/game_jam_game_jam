@@ -40,10 +40,10 @@ class Player:
                 if self.has_plate:
                     data = data + "_plate"
             self.image = pygame.image.load(os.path.join('images\\player', f'player{data}.png'))
-        else:
+        elif self.facing == "right":
             if self.walking:
                 data = data + "_walk"
                 if self.has_plate:
                     data = data + "_plate"
-            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\player', 'player.png')), True, False)
+            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\player', f'player{data}.png')), True, False)
         self.walking = not self.walking
