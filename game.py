@@ -1,6 +1,6 @@
-import pygame, os, json, random
+import pygame, os, json, datetime, random
 from pygame.locals import *
-from random import choice, randrange
+
 from tile import Tile
 from player import Player
 from lists import *
@@ -52,6 +52,10 @@ def game_loop():
     player = Player((850,450), 0.25, False)
     customers = []
 
+    last_second = int(datetime.datetime.now().strftime("%S"))
+    sit_clock = 0
+    sit_goal = random.randint(3, 7)
+
     while RUNNING:
         dt = clock.tick(60)
 
@@ -77,9 +81,6 @@ def game_loop():
             player.collision_rect.y += player.speed * dt
 
         # Collision Detection
-        print(player.rect.topleft)
-        print((player.collision_rect.left, player.collision_rect.top - 40))
-
         for tile in world.tiles:
             # SIDE COLLISIONS
             # Collide with left side of tile
@@ -141,18 +142,25 @@ def game_loop():
                     player.rect.top = tile.rect.bottom - PLAYER_SIZE
                     player.collision_rect.top = tile.rect.bottom
 
-        if randrange(0, 100) < 1:
-            if len(customers) < 10:
-                customers.append(NonPlayerCharacter())
+        now = int(datetime.datetime.now().strftime("%S"))
+        if now > last_second or (now == 0 and last_second == 59):
+            last_second = now
+            sit_clock += 1
+            print(sit_clock)
+            for customer in customers:
+                customer.anger += 1
+                if customer.anger == 10:
+                    customer.karen()
+            if sit_clock >= sit_goal:
+                if len(customers) <= 10:
+                    customers.append(NonPlayerCharacter())
+                    sit_clock = 0
+                    sit_goal = random.randint(3, 7)
 
-        if randrange(0, 100) < 1:
-            if len(customers) < 10:
-                customers.append(NonPlayerCharacter())
-
-        window.blit(player.image, player.rect)
         if len(customers) > 0:
             for customer in customers:
                 window.blit(customer.image, customer.rect)
+        window.blit(player.image, player.rect)
 
         pygame.display.update()
 
