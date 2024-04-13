@@ -1,14 +1,14 @@
 [
-    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
-    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
-    ["wall", "floor", "floor", "floor", "floor", "floor", "chair", "floor", "floor", "floor", "floor", "floor", "floor", "counter", "counter", "counter", "counter", "counter", "counter", "wall"],
-    ["wall", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "floor", "counter", "counter", "counter", "counter", "counter", "counter", "wall"],
-    ["wall", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "counter", "counter", "1", "1", "1", "1", "wall"],
-    ["wall", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "counter", "counter", "1", "1", "1", "1", "wall"],
-    ["wall", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "counter", "counter", "1", "1", "1", "1", "wall"],
-    ["wall", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "wall"],
-    ["wall", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "wall"],
-    ["wall", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "counter", "counter", "1", "1", "1", "1", "wall"],
-    ["wall", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "counter", "counter", "1", "1", "1", "1", "wall"],
-    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"]
+    ["wall", "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",   "wall",     "wall",    "wall",    "wall",    "wall",     "wall"],
+    ["wall", "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",   "wall",     "wall",    "wall",    "wall",    "wall",     "wall"],
+    ["wall", "floor", "floor", "floor", "floor", "floor", "chair", "floor", "floor", "floor", "floor", "floor", "floor", "counter", "counter", "counter", "counter", "counter", "counter",  "wall"],
+    ["wall", "floor", "floor", "table", "floor", "chair", "table", "chair", "floor", "table", "floor", "floor", "floor", "counter", "counter", "counter", "counter", "counter", "counter",  "wall"],
+    ["wall", "floor", "floor", "chair", "floor", "floor", "chair", "floor", "floor", "chair", "floor", "floor", "floor", "counter", "counter", "floor",   "floor",   "floor",   "floor",    "wall"],
+    ["wall", "floor", "floor", "chair", "floor", "floor", "chair", "floor", "floor", "chair", "floor", "floor", "floor", "counter", "counter", "floor",   "floor",   "floor",   "floor",    "wall"],
+    ["wall", "floor", "chair", "table", "chair", "floor", "table", "floor", "chair", "table", "chair", "floor", "floor", "counter", "counter", "floor",   "floor",   "floor",   "floor",    "wall"],
+    ["wall", "floor", "floor", "chair", "floor", "floor", "chair", "floor", "floor", "chair", "floor", "floor", "floor", "floor",   "floor",   "floor",   "floor",   "floor",   "floor",    "wall"],
+    ["wall", "floor", "floor", "chair", "floor", "floor", "chair", "floor", "floor", "chair", "floor", "floor", "floor", "floor",   "floor",   "floor",   "floor",   "floor",   "floor",    "wall"],
+    ["wall", "floor", "floor", "table", "floor", "chair", "table", "chair", "floor", "table", "floor", "floor", "floor", "counter", "counter", "floor",   "floor",   "floor",   "floor",    "wall"],
+    ["wall", "floor", "floor", "chair", "floor", "floor", "floor", "floor", "floor", "chair", "floor", "floor", "floor", "counter", "counter", "floor",   "floor",   "floor",   "floor",    "wall"],
+    ["wall", "floor", "floor", "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",    "wall",    "wall",    "wall",    "wall",    "wall",     "wall"]
 ]
