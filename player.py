@@ -33,17 +33,17 @@ class Player:
             self.facing = "left"
 
     def walk(self):
+        data = ""
         if self.facing == "left":
             if self.walking:
-                self.image = pygame.image.load(os.path.join('images', 'player_walk.png'))
-                self.walking = False
-            else:
-                self.image = pygame.image.load(os.path.join('images', 'player.png'))
-                self.walking = True
+                data = data + "_walk"
+                if self.has_plate:
+                    data = data + "_plate"
+            self.image = pygame.image.load(os.path.join('images', f'player{data}.png'))
         else:
             if self.walking:
-                self.image = pygame.transform.flip(pygame.image.load(os.path.join('images', 'player_walk.png')), True, False)
-                self.walking = False
-            else:
-                self.image = pygame.transform.flip(pygame.image.load(os.path.join('images', 'player.png')), True, False)
-                self.walking = True
+                data = data + "_walk"
+                if self.has_plate:
+                    data = data + "_plate"
+            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images', 'player.png')), True, False)
+        self.walking = not self.walking
