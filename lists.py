@@ -27,9 +27,14 @@ CHAIRS = [
 ]
 
 ORDERS = [
-    "soup", 
-    "steak",
-    "bird leg"
+    "soup", ]
+  #  "steak",
+   # "bird leg"
+#]
+
+HEAT = [
+    "hot",
+    "cold"
 ]
 
 FOOD_SPAWNS = [

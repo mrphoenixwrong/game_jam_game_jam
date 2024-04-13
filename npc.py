@@ -3,6 +3,8 @@ import os
 from random import randint, choice
 from lists import CHAIRS, ORDERS, CHARACTERS
 
+from food import Food
+
 class NonPlayerCharacter:
     
     def __init__(self):
@@ -41,11 +43,21 @@ class NonPlayerCharacter:
         self.rect = self.image.get_rect()
         self.rect.topleft = coordinates
 
+        self.order = Food()
+
+        self.thought_image = pygame.image.load(os.path.join('images\\food', f'thought_bubble.png'))
+        self.thought_rect = self.thought_image.get_rect()
+
+        self.food_image = pygame.image.load(os.path.join('images\\food', f'{self.order.type}_{self.order.hot}.png'))
+        self.food_rect = self.food_image.get_rect()
+
+        self.thought_rect.center = (self.rect.centerx, self.rect.top - 15)
+        self.food_rect.center = (self.rect.centerx, self.rect.top - 15)
+
     # will use choice to pick from list of 3 foods , maybe start the timer too
     def order_taken(self):
         self.order_status = "waiting for food"
         self.anger = 30
-        self.order = choice(ORDERS)
 
         coordinates = self.rect.topleft
 

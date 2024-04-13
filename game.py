@@ -51,6 +51,7 @@ def game_loop():
     world, RUNNING = createWorld()
     player = Player((850,450), 0.25, False)
     customers = []
+    customer_thoughts = []
     foods = []
 
     last_second = int(datetime.datetime.now().strftime("%S"))
@@ -216,15 +217,16 @@ def game_loop():
                     sit_clock = 0
                     sit_goal = random.randint(3, 7)
 
-        if len(customers) > 0:
-            for customer in customers:
-                if customer.rect.y < player.rect.y:
-                    window.blit(customer.image, customer.rect)
+        for customer in customers:
+            if customer.rect.y < player.rect.y:
+                window.blit(customer.image, customer.rect)
         window.blit(player.image, player.rect)
-        if len(customers) > 0:
-            for customer in customers:
-                if customer.rect.y > player.rect.y:
-                    window.blit(customer.image, customer.rect)
+        for customer in customers:
+            if customer.rect.y > player.rect.y:
+                window.blit(customer.image, customer.rect)
+            if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
+              #  window.blit(customer.thought_image, customer.thought_rect)
+                window.blit(customer.food_image, customer.food_rect)
 
         pygame.display.update()
 
