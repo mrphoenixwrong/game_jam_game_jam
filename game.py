@@ -163,6 +163,12 @@ def game_loop():
                     customer.wait -= 1
                     if customer.wait == 0:
                         customer.ready_to_order()
+                if customer.order_status == "too late!":
+                    customer.angered -= 1
+                    if customer.angered == 0:
+                        customer.stand_up()
+                        index = customers.index(customer)
+                        customers.pop(index)
             if sit_clock >= sit_goal:
                 if len(customers) <= 10:
                     customers.append(NonPlayerCharacter())
