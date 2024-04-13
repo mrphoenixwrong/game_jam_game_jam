@@ -51,6 +51,7 @@ def game_loop():
     world, RUNNING = createWorld()
     player = Player((850,450), 0.25, False)
     customers = []
+    foods = []
 
     last_second = int(datetime.datetime.now().strftime("%S"))
     current_milli = 0
