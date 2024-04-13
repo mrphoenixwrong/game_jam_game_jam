@@ -47,7 +47,7 @@ clock = pygame.time.Clock()
 
 def game_loop():
     world, RUNNING = createWorld()
-    player = Player((850,450), False)
+    player = Player((850,450), 0.25, False)
 
     while RUNNING:
         dt = clock.tick(60)
@@ -61,17 +61,17 @@ def game_loop():
         key_pressed_is = pygame.key.get_pressed()
         
         if key_pressed_is[K_LEFT] or key_pressed_is[K_a]:
-            player.rect.x -= 0.3 * dt
-            player.collision_rect.x -= 0.3 * dt
+            player.rect.x -= player.speed * dt
+            player.collision_rect.x -= player.speed * dt
         if key_pressed_is[K_RIGHT] or key_pressed_is[K_d]:
-            player.rect.x += 0.3 * dt
-            player.collision_rect.x += 0.3 * dt
+            player.rect.x += player.speed * dt
+            player.collision_rect.x += player.speed * dt
         if key_pressed_is[K_UP] or key_pressed_is[K_w]:
-            player.rect.y -= 0.3 * dt
-            player.collision_rect.y -= 0.3 * dt
+            player.rect.y -= player.speed * dt
+            player.collision_rect.y -= player.speed * dt
         if key_pressed_is[K_DOWN] or key_pressed_is[K_s]:
-            player.rect.y += 0.3 * dt
-            player.collision_rect.y += 0.3 * dt
+            player.rect.y += player.speed * dt
+            player.collision_rect.y += player.speed * dt
 
         # Collision Detection
         print(player.rect.topleft)
