@@ -5,6 +5,8 @@ from pygame.locals import *
 from tile import Tile
 from player import Player
 
+from chef import Chef
+
 pygame.init()
 
 WIDTH, HEIGHT = 1000, 600
@@ -48,6 +50,7 @@ clock = pygame.time.Clock()
 def game_loop():
     world, RUNNING = createWorld()
     player = Player((0,0), False)
+    chef = Chef((750,200))
 
     while RUNNING:
         dt = clock.tick(60)
@@ -78,7 +81,11 @@ def game_loop():
         if player.rect.y > HEIGHT - 2 * TILE_SIZE:
             player.rect.y = HEIGHT - 2 * TILE_SIZE
 
+        chef.collision(player)
+
         window.blit(player.image, player.rect)
+        window.blit(chef.image, chef.rect)
+        
 
         pygame.display.update()
 
