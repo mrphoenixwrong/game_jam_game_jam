@@ -29,7 +29,7 @@ class Player:
             self.image = pygame.transform.flip(pygame.image.load(os.path.join('images', 'player.png')), True, False)
             self.facing = "right"
         else:
-            self.image = pygame.image.load(os.path.join('images', 'player.png')), True, False
+            self.image = pygame.image.load(os.path.join('images', 'player.png'))
             self.facing = "left"
 
     def walk(self):

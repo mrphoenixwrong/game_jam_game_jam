@@ -53,7 +53,7 @@ def game_loop():
     customers = []
 
     last_second = int(datetime.datetime.now().strftime("%S"))
-    last_milli = 0
+    current_milli = 0
     sit_clock = 0
     sit_goal = random.randint(3, 7)
 
@@ -67,29 +67,52 @@ def game_loop():
                 RUNNING = False
 
         key_pressed_is = pygame.key.get_pressed()
-        
-        if key_pressed_is[K_LEFT] or key_pressed_is[K_a]:
+
+        left = False
+        right = False
+        up = False
+        down = False
+        if key_pressed_is[K_LEFT] or key_pressed_is[K_a] and not (key_pressed_is[K_RIGHT] or key_pressed_is[K_d]):
             player.rect.x -= player.speed * dt
             player.collision_rect.x -= player.speed * dt
             if player.facing == "right":
                 player.turn()
-        if key_pressed_is[K_RIGHT] or key_pressed_is[K_d]:
+            left = True
+        if key_pressed_is[K_RIGHT] or key_pressed_is[K_d] and not (key_pressed_is[K_LEFT] or key_pressed_is[K_a]):
             player.rect.x += player.speed * dt
             player.collision_rect.x += player.speed * dt
             if player.facing == "left":
                 player.turn()
-        if key_pressed_is[K_UP] or key_pressed_is[K_w]:
+            right = True
+        if key_pressed_is[K_UP] or key_pressed_is[K_w] and not (key_pressed_is[K_DOWN] or key_pressed_is[K_s]):
             player.rect.y -= player.speed * dt
             player.collision_rect.y -= player.speed * dt
-        if key_pressed_is[K_DOWN] or key_pressed_is[K_s]:
+            up = True
+        if key_pressed_is[K_DOWN] or key_pressed_is[K_s] and not (key_pressed_is[K_UP] or key_pressed_is[K_w]):
             player.rect.y += player.speed * dt
             player.collision_rect.y += player.speed * dt
+            down = True
         if key_pressed_is[K_e]:
             for customer in customers:
                 if player.collision_rect.centerx > customer.rect.centerx - TILE_SIZE and player.collision_rect.centerx < customer.rect.centerx + TILE_SIZE:
                     if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE:
                         if customer.order_status == "ready to order":
                             customer.order_taken()
+        
+        if left and right:
+            if (up and not down) or (down and not up):
+                player_moving = True
+            else:
+                player_moving = False
+        elif up and down:
+            if (left and not right) or (right and not left):
+                player_moving = True
+            else:
+                player_moving = False
+        elif left or right or up or down:
+            player_moving = True
+        else:
+            player_moving = False
 
 
         # Collision Detection
@@ -154,13 +177,14 @@ def game_loop():
                     player.rect.top = tile.rect.bottom - PLAYER_SIZE
                     player.collision_rect.top = tile.rect.bottom
 
-        current_milli = int(datetime.datetime.now().strftime("%f"))
-        print(current_milli)
-        if (current_milli == last_milli + 750000) or (current_milli > 0 and last_milli == 500000):
-            if last_milli == 0:
-                last_milli = 500000
-            elif last_milli == 500000:
-                last_milli = 0
+        current_milli += dt
+        if current_milli > 200 and player_moving:
+            print(current_milli)
+            current_milli = 0
+            player.walk()
+        elif not player_moving:
+            player.walking = False
+            player.walk()
 
 
 
