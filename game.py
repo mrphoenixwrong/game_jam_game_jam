@@ -98,6 +98,9 @@ def game_loop():
                     if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE:
                         if customer.order_status == "ready to order":
                             customer.order_taken()
+            for food in foods:
+                if player.collision_rect.centerx > food.rect.centerx - TILE_SIZE:
+                    pass
         
         if left and right:
             if (up and not down) or (down and not up):

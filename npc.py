@@ -6,7 +6,7 @@ from lists import *
 class NonPlayerCharacter:
     
     def __init__(self):
-        self.image = pygame.image.load(os.path.join('images', 'npc.png'))
+        self.image = pygame.image.load(os.path.join('images\\NPCs', 'npc.png'))
         self.rect = self.image.get_rect()
 
         self.rect.topleft = self.sit_down()
@@ -28,7 +28,7 @@ class NonPlayerCharacter:
 
         coordinates = self.rect.topleft
 
-        self.image = pygame.image.load(os.path.join('images', 'take_my_order!.png'))
+        self.image = pygame.image.load(os.path.join('images\\NPCs', 'take_my_order!.png'))
         self.rect = self.image.get_rect()
         self.rect.topleft = coordinates
 
@@ -40,7 +40,7 @@ class NonPlayerCharacter:
 
         coordinates = self.rect.topleft
 
-        self.image = pygame.image.load(os.path.join('images', 'npc.png'))
+        self.image = pygame.image.load(os.path.join('images\\NPCs', 'npc.png'))
         self.rect = self.image.get_rect()
         self.rect.topleft = coordinates
 
@@ -53,7 +53,7 @@ class NonPlayerCharacter:
 
         coordinates = self.rect.topleft
 
-        self.image = pygame.image.load(os.path.join('images', 'mad_npc.png'))
+        self.image = pygame.image.load(os.path.join('images\\NPCs', 'mad_npc.png'))
         self.rect = self.image.get_rect()
         self.rect.topleft = coordinates
     

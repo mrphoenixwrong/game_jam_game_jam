@@ -2,7 +2,7 @@ import pygame, os
 
 class Player:
     def __init__(self, coordinates, speed, has_plate):
-        self.image = pygame.image.load(os.path.join('images', 'player.png'))
+        self.image = pygame.image.load(os.path.join('images\\player', 'player.png'))
         self.rect = self.image.get_rect()
 
         self.x = coordinates[0]
@@ -26,10 +26,10 @@ class Player:
 
     def turn(self):
         if self.facing == "left":
-            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images', 'player.png')), True, False)
+            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\player', 'player.png')), True, False)
             self.facing = "right"
         else:
-            self.image = pygame.image.load(os.path.join('images', 'player.png'))
+            self.image = pygame.image.load(os.path.join('images\\player', 'player.png'))
             self.facing = "left"
 
     def walk(self):
@@ -39,11 +39,11 @@ class Player:
                 data = data + "_walk"
                 if self.has_plate:
                     data = data + "_plate"
-            self.image = pygame.image.load(os.path.join('images', f'player{data}.png'))
+            self.image = pygame.image.load(os.path.join('images\\player', f'player{data}.png'))
         else:
             if self.walking:
                 data = data + "_walk"
                 if self.has_plate:
                     data = data + "_plate"
-            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images', 'player.png')), True, False)
+            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\player', 'player.png')), True, False)
         self.walking = not self.walking
