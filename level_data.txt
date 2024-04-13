@@ -1,5 +1,5 @@
 [
-    ["wall", "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",   "wall",     "wall",    "wall",    "wall",    "wall",     "wall"],
+    ["sign_end", "sign",  "sign",  "sign",  "sign",  "sign",  "sign",  "sign",  "sign",  "sign",  "sign",  "sign",  "sign",  "sign",   "sign",     "sign",    "sign",    "sign",    "sign",     "sign_end_other"],
     ["wall", "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",  "wall",   "wall",     "wall",    "wall",    "wall",    "wall",     "wall"],
     ["wall", "floor", "floor", "floor", "floor", "floor", "chair", "floor", "floor", "floor", "floor", "floor", "floor", "counter", "counter", "counter", "counter", "counter", "counter",  "wall"],
     ["wall", "floor", "floor", "table", "floor", "chair", "table", "chair", "floor", "table", "floor", "floor", "floor", "counter", "counter", "counter", "counter", "counter", "counter",  "wall"],
