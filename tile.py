@@ -1,5 +1,5 @@
 class Tile:
-    def __init__(self, image, rect, collision):
+    def __init__(self, image, collision):
         self.image = image
-        self.rect = rect
+        self.rect = image.get_rect()
         self.collision = collision
