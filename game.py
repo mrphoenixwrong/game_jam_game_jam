@@ -1,4 +1,5 @@
 import pygame, os, json
+from pygame.locals import *
 
 from tile import Tile
 
@@ -50,7 +51,9 @@ else:
     RUNNING = False
     print("not all files downloaded :(")
 
+clock = pygame.time.Clock()
 while RUNNING:
+    dt = clock.tick(60)
     window.fill((255,255,255))
 
     window.blit(rect, (0,0))
@@ -59,4 +62,16 @@ while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
+
+    key_pressed_is = pygame.key.get_pressed()
+    
+    if key_pressed_is[K_LEFT] or key_pressed_is[K_a]:
+        pass
+    if key_pressed_is[K_RIGHT] or key_pressed_is[K_d]:
+        pass
+    if key_pressed_is[K_UP] or key_pressed_is[K_w]:
+        pass
+    if key_pressed_is[K_DOWN] or key_pressed_is[K_s]:
+        pass
+
     pygame.display.update()
