@@ -1,8 +1,10 @@
-import pygame, os, json
+import pygame, os, json, random
 from pygame.locals import *
-
+from random import choice, randrange
 from tile import Tile
 from player import Player
+from lists import *
+from npc import NonPlayerCharacter
 
 pygame.init()
 
@@ -47,6 +49,7 @@ clock = pygame.time.Clock()
 def game_loop():
     world, RUNNING = createWorld()
     player = Player((0,0), False)
+    customers = []
 
     while RUNNING:
         dt = clock.tick(60)
@@ -77,7 +80,14 @@ def game_loop():
         if player.rect.y > HEIGHT - 2 * TILE_SIZE:
             player.rect.y = HEIGHT - 2 * TILE_SIZE
 
+        if randrange(0, 100) < 1:
+            if len(customers) < 10:
+                customers.append(NonPlayerCharacter())
+
         window.blit(player.image, player.rect)
+        if len(customers) > 0:
+            for customer in customers:
+                window.blit(customer.image, customer.rect)
 
         pygame.display.update()
 
