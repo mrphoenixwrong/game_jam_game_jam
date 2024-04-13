@@ -1,5 +1,7 @@
 import pygame, os, json
 
+from tile import Tile
+
 pygame.init()
 
 WIDTH, HEIGHT = 1000, 600
@@ -33,12 +35,6 @@ class World:
     def draw(self):
         for tile in self.tiles:
             window.blit(tile.image, tile.rect)
-
-class Tile:
-    def __init__(self, image, rect, collision):
-        self.image = image
-        self.rect = rect
-        self.collision = collision
 
 
     def displayTiles(self):
