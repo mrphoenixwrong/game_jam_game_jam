@@ -4,10 +4,10 @@ import pygame, random
 class Chef:  
 
     def __init__(self,coordinates):
-        miku = pygame.image.load("unused sprites/mikudayo.png")
-        self.image = pygame.transform.scale(miku, (60,80))
-        #self.image = pygame.image.load(os.path.join('unused sprites', 'mikudayo.png'))
-        self.rect = self.image.get_rect()
+        miku = pygame.image.load("images/chef/chefCook1.png")
+        self.image = pygame.transform.scale(miku, (50,75))
+        self.img_rect = self.image.get_rect()
+        self.rect = pygame.surface.Surface((50, 60)).get_rect()
 
 
         #pygame.transform.scale(self.rect, (40,40))
@@ -19,7 +19,9 @@ class Chef:
 
     def cookin(self, direction: str):
         if direction == "right":
-            self.rect.x += .5
+            self.rect.x += 2
+            self.img_rect.x += 2
         else:
-           self.rect.x -= .5
+           self.rect.x -= 2
+           self.img_rect.x -= 2
            

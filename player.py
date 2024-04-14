@@ -20,28 +20,24 @@ class Player:
 
     #managing collision with other "people"
     def collision_up(self, other, distance):
-        if pygame.Rect.colliderect(other.rect, self.rect) == True:
-            self.rect.y += distance 
-            print("touch")
-            print(self.rect.x, self.rect.y)
+        if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:
+            self.collision_rect.y += distance
+            self.rect.y += distance
 
     def collision_down(self, other, distance):
-        if pygame.Rect.colliderect(other.rect, self.rect) == True:
+        if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:
+            self.collision_rect.y -= distance
             self.rect.y -= distance 
-            print("touch")
-            print(self.rect.x, self.rect.y)
 
     def collision_left(self, other, distance):
-        if pygame.Rect.colliderect(other.rect, self.rect) == True:
-            self.rect.x += distance 
-            print("touch")
-            print(self.rect.x, self.rect.y)
+        if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:
+            self.collision_rect.x += distance
+            self.rect.x += distance
 
     def collision_right(self, other, distance):
-        if pygame.Rect.colliderect(other.rect, self.rect) == True:
-            self.rect.x -= distance 
-            print("touch")
-            print(self.rect.x, self.rect.y)
+        if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:
+            self.collision_rect.x -= distance
+            self.rect.x -= distance
 
 
     def pick_up_or_put_down(self):
