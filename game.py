@@ -354,7 +354,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 food_to_prepare[0].prepare_time -= 1
                 if food_to_prepare[0].prepare_time == 1:
                     chef.direction = "left"
-                if food_to_prepare[0].prepare_time == 0:
+                if food_to_prepare[0].prepare_time == 0 and len(prepared_food) < 4:
                     food_item = food_to_prepare[0]
                     food_to_prepare.pop(0)
 
