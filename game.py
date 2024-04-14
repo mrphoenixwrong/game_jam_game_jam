@@ -145,6 +145,10 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                     prepared_food.pop(0)
                     player.pick_up()
                     FOOD_SPAWNS.append(held_food[2].topleft)
+            elif player.has_plate:
+                if player.collision_rect.centerx > 850 and player.collision_rect.centery > 450:
+                    held_food = []
+                    player.has_plate = False
 
         if left and right:
             if (up and not down) or (down and not up):
@@ -299,11 +303,11 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 if customer.order_status == "waiting for food":
                     if customer.anger == 0:
                         customer.karen()
-                        customer.order_status = "food prepared"
                     customer.anger -= 1
                 if customer.order_status == "food prepared":
                     if customer.anger == 0:
                         customer.karen()
+                        print("mad and should leave")
                     customer.anger -= 1
                 if customer.order_status == "too late!" or customer.order_status == "order complete":
                     if customer.leaving == 0:
