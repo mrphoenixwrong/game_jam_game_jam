@@ -210,6 +210,8 @@ def game_loop():
                     player.rect.top = tile.rect.bottom - PLAYER_SIZE
                     player.collision_rect.top = tile.rect.bottom
 
+        for customer in customers:
+            pass
         #chef border collision (so they don't go into the void)
         #left walll
         if chef.rect.x < 751:
