@@ -58,10 +58,11 @@ class NonPlayerCharacter:
 
     def received_order(self):
         self.order_status = "order complete"
+        self.leaving = 5
 
     def karen(self):
         self.order_status = "too late!"
-        self.angered = 5
+        self.leaving = 5
 
         coordinates = self.rect.topleft
 
