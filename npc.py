@@ -60,6 +60,8 @@ class NonPlayerCharacter:
 
         self.food_rect.center = (self.thought_rect.centerx, self.thought_rect.centery - 3)
 
+        return (self.food_image, self.food_rect)
+
     def received_order(self):
         self.order_status = "order complete"
         self.leaving = 5
