@@ -21,49 +21,40 @@ class NonPlayerCharacter:
         index = CHAIRS.index(chair)
         CHAIRS.pop(index)
         if chair[2] == "Right":
-            self.default_image = pygame.transform.flip(pygame.image.load(os.path.join('images\\NPCs', f'{self.character}Side.png')), True, False)
-            self.rect = self.default_image.get_rect()
-        elif chair[2] == "Left":
-            self.default_image = pygame.image.load(os.path.join('images\\NPCs', f'{self.character}Side.png'))
-            self.rect = self.default_image.get_rect()
+            self.default_image = f"{self.character}Side"
+            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png')), True, False)
         else:
-            self.default_image = pygame.image.load(os.path.join('images\\NPCs', f'{self.character}{chair[2]}.png'))
-            self.rect = self.default_image.get_rect()
+            if chair[2] == "Left":
+                self.default_image = f"{self.character}Side"
+            else:
+                self.default_image = f"{self.character}{chair[2]}"
+            self.image = pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png'))
+        self.rect = self.image.get_rect()
         self.rect.topleft = (chair[0], chair[1]-40)
 
-        self.image = self.default_image
+
 
     def ready_to_order(self):
         self.order_status = "ready to order"
         self.anger = 10
 
-        coordinates = self.rect.topleft
-
-        self.image = pygame.image.load(os.path.join('images\\NPCs', 'take_my_order!.png'))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = coordinates
-
         self.order = Food()
 
-        self.thought_image = pygame.image.load(os.path.join('images\\food', f'thought_bubble.png'))
+        self.thought_image = pygame.image.load(os.path.join('images\\food', 'thought_bubble.png'))
         self.thought_rect = self.thought_image.get_rect()
 
-        self.food_image = pygame.image.load(os.path.join('images\\food', f'{self.order.type}_{self.order.hot}.png'))
-        self.food_rect = self.food_image.get_rect()
 
-        self.thought_rect.center = (self.rect.centerx, self.rect.top - 15)
-        self.food_rect.center = (self.rect.centerx, self.rect.top - 15)
+        self.thought_rect.center = (self.rect.right, self.rect.top - 15)
 
     # will use choice to pick from list of 3 foods , maybe start the timer too
     def order_taken(self):
         self.order_status = "waiting for food"
         self.anger = 30
 
-        coordinates = self.rect.topleft
+        self.food_image = pygame.image.load(os.path.join('images\\food', f'{self.order.type}_{self.order.hot}.png'))
+        self.food_rect = self.food_image.get_rect()
 
-        self.image = self.default_image
-        self.rect = self.image.get_rect()
-        self.rect.topleft = coordinates
+        self.food_rect.center = (self.thought_rect.centerx, self.thought_rect.centery)
 
     def received_order(self):
         self.order_status = "order complete"
@@ -74,7 +65,7 @@ class NonPlayerCharacter:
 
         coordinates = self.rect.topleft
 
-        self.image = pygame.image.load(os.path.join('images\\NPCs', 'mad_npc.png'))
+        self.image = pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}Angry.png'))
         self.rect = self.image.get_rect()
         self.rect.topleft = coordinates
     

@@ -224,9 +224,11 @@ def game_loop():
         for customer in customers:
             if customer.rect.y > player.rect.y:
                 window.blit(customer.image, customer.rect)
+        for customer in customers:
             if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
-              #  window.blit(customer.thought_image, customer.thought_rect)
-                window.blit(customer.food_image, customer.food_rect)
+                window.blit(customer.thought_image, customer.thought_rect)
+                if customer.order_status == "waiting for food":
+                    window.blit(customer.food_image, customer.food_rect)
 
         pygame.display.update()
 
