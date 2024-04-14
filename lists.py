@@ -47,5 +47,6 @@ FOOD_SPAWNS = [
 
 CHARACTERS = [
     "manly",
-    "sans"
+    "sans",
+    "lucas"
 ]
