@@ -458,8 +458,10 @@ def transition_loop(happiness_matters, purpose, happiness, customer_goal):
     
     if happiness_matters:
         if happiness >= customer_goal:
-                screen_card = pygame.image.load(os.path.join("images\\screens", "win.png"))
-                RESTART = False
+            pygame.mixer.music.load(os.path.join('music', 'win.mp3'))
+            pygame.mixer.music.play(1)
+            screen_card = pygame.image.load(os.path.join("images\\screens", "WSCdaycomplete.png"))
+            RESTART = False
         else:
             pygame.mixer.music.load(os.path.join('music', 'wompwomp.mp3'))
             pygame.mixer.music.play(1)
@@ -467,6 +469,9 @@ def transition_loop(happiness_matters, purpose, happiness, customer_goal):
             RESTART = True
     else:
         screen_card = pygame.image.load(os.path.join("images\\screens", f"{purpose}.png"))
+        if purpose == "WSCpromoted":
+            pygame.mixer.music.load(os.path.join('music', 'win.mp3'))
+            pygame.mixer.music.play(1)
 
     RUNNING = True
     while RUNNING:
