@@ -47,20 +47,18 @@ class NonPlayerCharacter:
         self.thought_image = pygame.image.load(os.path.join('images\\food', 'thought_bubble.png'))
         self.thought_rect = self.thought_image.get_rect()
 
-
         self.thought_rect.center = (self.rect.right, self.rect.top - 15)
 
     # will use choice to pick from list of 3 foods , maybe start the timer too
     def order_taken(self):
         self.order_status = "waiting for food"
         self.anger = 30
+        self.prepare_time = 5
 
         self.food_image = pygame.image.load(os.path.join('images\\food', f'{self.order.type}_{self.order.hot}.png'))
         self.food_rect = self.food_image.get_rect()
 
         self.food_rect.center = (self.thought_rect.centerx, self.thought_rect.centery - 3)
-
-        return (self.food_image, self.food_rect)
 
     def received_order(self):
         self.order_status = "order complete"

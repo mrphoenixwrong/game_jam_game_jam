@@ -59,6 +59,8 @@ def game_loop():
     
     customers = []
     foods = []
+    food_to_prepare = []
+    prepared_food = []
 
     last_second = int(datetime.datetime.now().strftime("%S"))
     current_milli = 0
@@ -128,6 +130,8 @@ def game_loop():
                     if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE:
                         if customer.order_status == "ready to order":
                             customer.order_taken()
+                            food_to_prepare.append(str(customer.order))
+                            print(food_to_prepare)
             for food in foods:
                 if player.collision_rect.centerx > food.rect.centerx - TILE_SIZE:
                     pass
@@ -212,6 +216,7 @@ def game_loop():
 
         for customer in customers:
             pass
+
         #chef border collision (so they don't go into the void)
         #left walll
         if chef.rect.x < 751:
@@ -222,13 +227,12 @@ def game_loop():
         
         #chef idle movement
         chance = randint(1,100)
-        if chance == 24:
+        if chance == 23:
             if chef_move_count >= 10:
                 direction = choice(["left", "right"])
                 chef_move_count = 0
             chef.cookin(direction)
             chef_move_count += 1
-
 
         current_milli += dt
         if current_milli > 200 and player_moving:
@@ -243,14 +247,35 @@ def game_loop():
             last_second = now
             sit_clock += 1
             for customer in customers:
-                if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
-                    customer.anger -= 1
-                    if customer.anger == 0:
-                        customer.karen()
                 if customer.order_status == "just sat":
                     customer.wait -= 1
                     if customer.wait == 0:
                         customer.ready_to_order()
+                if customer.order_status == "ready to order":
+                    customer.anger -= 1
+                    if customer.anger == 0:
+                        customer.karen()
+                if customer.order_status == "waiting for food":
+                    customer.anger -= 1
+                    if len(prepared_food) < 4:
+                        customer.prepare_time -= 1
+                    if customer.anger == 0:
+                        customer.karen()
+                    if customer.prepare_time == 0:
+                        index = food_to_prepare.index(customer.order.full_order)
+                        food_to_prepare.pop(index)
+
+                        location = choice(FOOD_SPAWNS)
+                        index = FOOD_SPAWNS.index(location)
+                        FOOD_SPAWNS.pop(index)
+                        customer.order.spawn(location)
+                        prepared_food.append(((customer.order.full_order), (customer.order.rect.x, customer.order.rect.y)))
+                        
+                        customer.order_status = "food prepared"
+                if customer.order_status == "waiting for food":
+                    customer.anger -= 1
+                    if customer.anger == 0:
+                        customer.karen()
                 if customer.order_status == "order complete":
                     earnings += customer.received_order()
                 if customer.order_status == "too late!" or customer.order_status == "order complete":

@@ -10,4 +10,14 @@ class Food:
         self.price = food[1]
         self.hot = choice(HEAT)
 
+        self.full_order = f"{self.type}_{self.hot}"
+
         self.image = pygame.image.load(os.path.join('images\\food', f'{self.type}_{self.hot}.png'))
+    
+    def spawn(self, coordinates):
+        self.rect = self.image.get_rect()
+        self.rect.topleft = coordinates
+
+    def __str__(self):
+        meal = self.full_order
+        return meal
