@@ -18,6 +18,16 @@ class Player:
         self.speed = speed
         self.has_plate = has_plate
 
+    #player rect getter (pythonic)
+    @property
+    def rect(self):
+        return self._rect
+    
+    @rect.setter
+    def rect(self, new_rect):
+        self._rect = new_rect
+    
+
     #managing collision with other "people"
     def collision_up(self, other, distance):
         if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:

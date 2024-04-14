@@ -254,9 +254,10 @@ def game_loop():
                         customer.stand_up()
                         index = customers.index(customer)
                         customers.pop(index)
+                        
             if sit_clock >= sit_goal:
                 if len(customers) <= 10:
-                    customers.append(NonPlayerCharacter())
+                    customers.append(NonPlayerCharacter(player))
                     sit_clock = 0
                     sit_goal = random.randint(3, 7)
 
