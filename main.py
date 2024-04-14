@@ -1,4 +1,4 @@
-from game import title_loop, game_loop
+from game import title_loop, game_loop, transition_loop
 
 RUNNING = True
 
@@ -12,3 +12,5 @@ while RUNNING:
             IN_LEVEL = True
             while IN_LEVEL:
                 RUNNING, IN_LEVEL = game_loop(i+1, levels[i][0], levels[i][1], levels[i][2], levels[i][3], levels[i][4])
+    if RUNNING:
+        transition_loop(False, "promotion", 0, 0)
