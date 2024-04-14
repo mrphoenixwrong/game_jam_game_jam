@@ -105,6 +105,8 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
 
     happiness = 0
 
+    e_released = True
+
     while RUNNING:
         dt = clock.tick(60)
 
@@ -162,30 +164,34 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
             down = True
 
         if key_pressed_is[K_e]:
-            for customer in customers:
-                if player.collision_rect.centerx > customer.rect.centerx - TILE_SIZE and player.collision_rect.centerx < customer.rect.centerx + TILE_SIZE:
-                    if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE + 20:
-                        if customer.order_status == "ready to order":
-                            customer.order_taken()
-                            food_to_prepare.append(customer.order)
-                            customer.set_bar()
-                        elif customer.order_status == "waiting for food" and player.has_plate:
-                            if held_food[0] == customer.order.full_order:
-                                held_food = []
-                                player.has_plate = False
-                                customer.received_order()
-                                player.set_bar()
-            if not player.has_plate and len(prepared_food) > 0:
-                if player.collision_rect.centerx > prepared_food[0][2].centerx - TILE_SIZE and player.collision_rect.centerx < prepared_food[0][2].centerx + TILE_SIZE:
-                    held_food = prepared_food[0]
-                    prepared_food.pop(0)
-                    player.pick_up()
-                    FOOD_SPAWNS.append(held_food[2].topleft)
-            elif player.has_plate:
-                if player.collision_rect.centerx > 850 and player.collision_rect.centery > 450:
-                    held_food = []
-                    player.has_plate = False
-                    player.set_bar()
+            if e_released:
+                e_released = False
+                for customer in customers:
+                    if player.collision_rect.centerx > customer.rect.centerx - TILE_SIZE and player.collision_rect.centerx < customer.rect.centerx + TILE_SIZE:
+                        if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE + 20:
+                            if customer.order_status == "ready to order":
+                                customer.order_taken()
+                                food_to_prepare.append(customer.order)
+                                customer.set_bar()
+                            elif customer.order_status == "waiting for food" and player.has_plate:
+                                if held_food[0] == customer.order.full_order:
+                                    held_food = []
+                                    player.has_plate = False
+                                    customer.received_order()
+                                    player.set_bar()
+                if not player.has_plate and len(prepared_food) > 0:
+                    if player.collision_rect.centerx > prepared_food[0][2].centerx - TILE_SIZE and player.collision_rect.centerx < prepared_food[0][2].centerx + TILE_SIZE:
+                        held_food = prepared_food[0]
+                        prepared_food.pop(0)
+                        player.pick_up()
+                        FOOD_SPAWNS.append(held_food[2].topleft)
+                elif player.has_plate:
+                    if player.collision_rect.centerx > 850 and player.collision_rect.centery > 450:
+                        held_food = []
+                        player.has_plate = False
+                        player.set_bar()
+        else:
+            e_released = True
 
         if left and right:
             if (up and not down) or (down and not up):
@@ -441,6 +447,21 @@ def transition_loop(happiness_matters, purpose, happiness, customer_goal):
                 CONTINUE = False
         key_pressed_is = pygame.key.get_pressed()
         if key_pressed_is[K_RETURN]:
+            RUNNING = False
+            CONTINUE = True
+        window.blit(screen_card, (0,0))
+
+        pygame.display.update()
+
+    RUNNING = True
+    while RUNNING:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                RUNNING = False
+                RESTART = False
+                CONTINUE = False
+        key_pressed_is = pygame.key.get_pressed()
+        if not key_pressed_is[K_RETURN]:
             RUNNING = False
             CONTINUE = True
         window.blit(screen_card, (0,0))
