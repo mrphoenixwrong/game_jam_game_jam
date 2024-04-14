@@ -10,11 +10,12 @@ class NonPlayerCharacter:
     def __init__(self):
         self.character = choice(CHARACTERS)
         self.sit_down()
+        self.anger = 0
+        self.set_bar()
 
     # will use choice to pick a random key from the paths dictionary and go sit in the chair
     def sit_down(self):
         self.order_status = "just sat"
-        self.anger = 999
         self.wait = randint(2,4)
 
         self.chair = choice(CHAIRS)
@@ -36,7 +37,24 @@ class NonPlayerCharacter:
         self.rect.topleft = (self.chair[0], self.chair[1]-40)
         self.collision_rect.topleft = (self.chair[0]+5, self.chair[1]+5)
 
+    def more_angry(self):
+        if self.anger > 0:
+            self.anger -= 1
+        self.set_bar()
 
+    def set_bar(self):
+        if self.order_status == "ready to order":
+            self.bar = pygame.surface.Surface((self.anger * 6, 5))
+            self.bar.fill((255-(self.anger * 24), 15+(self.anger * 24), 0))
+        elif self.order_status == "waiting for food" or self.order_status == "food prepared":
+            self.bar = pygame.surface.Surface((self.anger * 4, 5))
+            self.bar.fill((255-(self.anger * 16), 15+(self.anger * 16), 0))
+        else:
+            self.bar = pygame.surface.Surface((0, 5))
+            self.bar.fill((0, 0, 0))
+    
+        self.bar_rect = self.bar.get_rect()
+        self.bar_rect.center = (self.rect.centerx, self.rect.top - 2)
 
     def ready_to_order(self, can_cold):
         self.order_status = "ready to order"
