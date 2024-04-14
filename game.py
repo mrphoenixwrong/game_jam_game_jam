@@ -269,8 +269,8 @@ def game_loop():
                         index = FOOD_SPAWNS.index(location)
                         FOOD_SPAWNS.pop(index)
                         customer.order.spawn(location)
-                        prepared_food.append(((customer.order.full_order), (customer.order.rect.x, customer.order.rect.y)))
-                        
+                        prepared_food.append(((customer.order.full_order), customer.order.image, (customer.order.rect.x+12, customer.order.rect.y+12)))
+
                         customer.order_status = "food prepared"
                 if customer.order_status == "waiting for food":
                     customer.anger -= 1
@@ -300,10 +300,12 @@ def game_loop():
             if customer.rect.y > player.rect.y:
                 window.blit(customer.image, customer.rect)
         for customer in customers:
-            if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
+            if customer.order_status == "ready to order" or customer.order_status == "waiting for food" or customer.order_status == "food prepared":
                 window.blit(customer.thought_image, customer.thought_rect)
-                if customer.order_status == "waiting for food":
+                if customer.order_status == "waiting for food" or customer.order_status == "food prepared":
                     window.blit(customer.food_image, customer.food_rect)
+        for food in prepared_food:
+            window.blit(food[1], food[2])
 
         pygame.display.update()
 
