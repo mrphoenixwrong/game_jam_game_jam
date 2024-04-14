@@ -184,7 +184,6 @@ def game_loop():
 
         current_milli += dt
         if current_milli > 200 and player_moving:
-            print(current_milli)
             current_milli = 0
             player.walk()
         elif not player_moving:
@@ -195,7 +194,6 @@ def game_loop():
         if now > last_second or (now == 0 and last_second == 59):
             last_second = now
             sit_clock += 1
-            print(sit_clock)
             for customer in customers:
                 if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
                     customer.anger -= 1

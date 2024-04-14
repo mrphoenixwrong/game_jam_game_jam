@@ -17,20 +17,20 @@ class NonPlayerCharacter:
         self.anger = 999
         self.wait = randint(2,4)
 
-        chair = choice(CHAIRS)
-        index = CHAIRS.index(chair)
+        self.chair = choice(CHAIRS)
+        index = CHAIRS.index(self.chair)
         CHAIRS.pop(index)
-        if chair[2] == "Right":
+        if self.chair[2] == "Right":
             self.default_image = f"{self.character}Side"
             self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png')), True, False)
         else:
-            if chair[2] == "Left":
+            if self.chair[2] == "Left":
                 self.default_image = f"{self.character}Side"
             else:
-                self.default_image = f"{self.character}{chair[2]}"
+                self.default_image = f"{self.character}{self.chair[2]}"
             self.image = pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png'))
         self.rect = self.image.get_rect()
-        self.rect.topleft = (chair[0], chair[1]-40)
+        self.rect.topleft = (self.chair[0], self.chair[1]-40)
 
 
 
@@ -54,7 +54,7 @@ class NonPlayerCharacter:
         self.food_image = pygame.image.load(os.path.join('images\\food', f'{self.order.type}_{self.order.hot}.png'))
         self.food_rect = self.food_image.get_rect()
 
-        self.food_rect.center = (self.thought_rect.centerx, self.thought_rect.centery)
+        self.food_rect.center = (self.thought_rect.centerx, self.thought_rect.centery - 3)
 
     def received_order(self):
         self.order_status = "order complete"
@@ -70,7 +70,7 @@ class NonPlayerCharacter:
         self.rect.topleft = coordinates
     
     def stand_up(self):
-        CHAIRS.append((self.rect.left, self.rect.top))
+        CHAIRS.append(self.chair)
 
     # once the customer has its order it will wait for some time
     # IF it doesnt get its order Then it will get angry and leave
