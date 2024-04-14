@@ -7,9 +7,17 @@ from lists import *
 from npc import NonPlayerCharacter
 
 from chef import Chef
-from random import randint, choice
+from random import randint, choice, uniform
+
+from particles import Particle
 
 pygame.init()
+
+
+particle_group = pygame.sprite.Group()
+
+floating_particle_timer = pygame.event.custom_type()
+pygame.time.set_timer(floating_particle_timer, 10)
 
 WIDTH, HEIGHT = 1000, 600
 window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -311,6 +319,20 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
             chef.direction = "none"
 
         player.place_bar()
+        
+        #snowflakes!
+        def spawn_floating_particles():
+            pos = player.collision_rect.x + randint(-1,30), player.collision_rect.y + randint(-20,20)
+            snow_direct = pygame.math.Vector2(0,-1)
+            speed = randint(1,24)
+            Particle(snow_direct, speed, pos, particle_group)
+            particle_group.draw(window)
+
+        if event.type == floating_particle_timer:
+            spawn_floating_particles()
+        
+        particle_group.update(dt/1000)
+
 
         now = int(datetime.datetime.now().strftime("%S"))
         if now > last_second or (now == 0 and last_second == 59):
