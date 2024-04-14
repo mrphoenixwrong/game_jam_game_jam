@@ -51,14 +51,48 @@ def createWorld():
 
 clock = pygame.time.Clock()
 
+def title_loop():
+    title_screen = pygame.image.load(os.path.join("images\\screens", "WSCtitlemenu.png"))
+
+
+    start_button = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 20).render(f"START JOB", True, (255, 255, 255))
+    start_rect = start_button.get_rect(center=((950-560)/2 + 560, (478-434)/2 + 434))
+
+    controls_button = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 20).render(f"CONTROLS", True, (255, 255, 255))
+    controls_rect = controls_button.get_rect(center=((950-560)/2 + 560, (528-486)/2 + 486))
+
+    credits_button = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 20).render(f"CREDITS", True, (255, 255, 255))
+    credits_rect = credits_button.get_rect(center=((950-560)/2 + 560, (584-536)/2 + 536))
+
+    RUNNING = True
+    while RUNNING:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                RUNNING = False
+                CONTINUE = False
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse = pygame.mouse.get_pos()
+                if 560 <= mouse[0] <= 950 and 434 <= mouse[1] <= 478:
+                    return True
+                if 560 <= mouse[0] <= 950 and 486 <= mouse[1] <= 528:
+                    RUNNING, CONTINUE = transition_loop(False, "controls", 0, 0)
+                if 560 <= mouse[0] <= 950 and 536 <= mouse[1] <= 584:
+                    RUNNING, CONTINUE = transition_loop(False, "credits", 0, 0)
+
+        window.blit(title_screen, (0,0))
+        window.blit(start_button, start_rect)
+        window.blit(controls_button, controls_rect)
+        window.blit(credits_button, credits_rect)
+
+        pygame.display.update()
+    return CONTINUE
 
 def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
     world, RUNNING = createWorld()
     CONTINUE = True
     player = Player((850,450), 0.25, False)
     chef = Chef((850,200))
-    direction = choice(["left", "right"])
-    chef_move_count = 0
     
     customers = []
     food_to_prepare = []
@@ -382,30 +416,37 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
 
         pygame.display.update()
 
-    print("we made it!")
     if CONTINUE:
+        return transition_loop(True, False, happiness, customer_goal)
+    return False, False
+
+
+def transition_loop(happiness_matters, purpose, happiness, customer_goal):
+    if happiness_matters:
         if happiness >= customer_goal:
-            ending_card = pygame.image.load(os.path.join("images\\screens", "win.png"))
-            RESTART = False
-            print("we won :)")
+                screen_card = pygame.image.load(os.path.join("images\\screens", "win.png"))
+                RESTART = False
         else:
-            ending_card = pygame.image.load(os.path.join("images\\screens", "lose.png"))
+            screen_card = pygame.image.load(os.path.join("images\\screens", "lose.png"))
             RESTART = True
-            print('we failed :(')
-
-        RUNNING = True
-        while RUNNING:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    RUNNING = False
-                    CONTINUE = False
-                    RESTART = False
-            key_pressed_is = pygame.key.get_pressed()
-            if key_pressed_is[K_RETURN]:
-                RUNNING = False
-            window.blit(ending_card, (0,0))
-
-            pygame.display.update()
     else:
-        RESTART = False
-    return CONTINUE, RESTART
+        screen_card = pygame.image.load(os.path.join("images\\screens", f"{purpose}.png"))
+
+    RUNNING = True
+    while RUNNING:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                RUNNING = False
+                RESTART = False
+                CONTINUE = False
+        key_pressed_is = pygame.key.get_pressed()
+        if key_pressed_is[K_RETURN]:
+            RUNNING = False
+            CONTINUE = True
+        window.blit(screen_card, (0,0))
+
+        pygame.display.update()
+    if happiness_matters:
+        return CONTINUE, RESTART
+    else:
+        return CONTINUE, CONTINUE
