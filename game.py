@@ -18,6 +18,8 @@ pygame.display.set_caption("Game Jam Game")
 TILE_SIZE = 50
 PLAYER_SIZE = 40
 
+font = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 25)
+
 class World:
     def __init__(self, world_data):
         self.tiles = []
@@ -50,8 +52,9 @@ def createWorld():
 clock = pygame.time.Clock()
 
 
-def game_loop():
+def game_loop(time_left, rate, max_customers):
     world, RUNNING = createWorld()
+    GO_TO_ENDING = True
     player = Player((850,450), 0.25, False)
     chef = Chef((750,200))
     direction = choice(["left", "right"])
@@ -64,9 +67,9 @@ def game_loop():
     last_second = int(datetime.datetime.now().strftime("%S"))
     current_milli = 0
     sit_clock = 0
-    sit_goal = random.randint(3, 7)
+    sit_goal = random.randint(rate[0], rate[1])
 
-    earnings = 0
+    people_served = 0
 
     while RUNNING:
         dt = clock.tick(60)
@@ -76,6 +79,7 @@ def game_loop():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUNNING = False
+                GO_TO_ENDING = False
 
         key_pressed_is = pygame.key.get_pressed()
 
@@ -134,10 +138,8 @@ def game_loop():
                             if held_food[0] == customer.order.full_order:
                                 held_food = []
                                 player.has_plate = False
-                                earnings += customer.received_order()
-                                print(customer.leaving)
-                                print(customer.order_status)
-                                print(earnings)
+                                customer.received_order()
+                                people_served += 1
             if not player.has_plate and len(prepared_food) > 0:
                 if player.collision_rect.centerx > prepared_food[0][2].centerx - TILE_SIZE and player.collision_rect.centerx < prepared_food[0][2].centerx + TILE_SIZE:
                     held_food = prepared_food[0]
@@ -266,6 +268,9 @@ def game_loop():
         if now > last_second or (now == 0 and last_second == 59):
             last_second = now
             sit_clock += 1
+            time_left -= 1
+            if time_left == 0:
+                RUNNING = False
 
             if len(food_to_prepare) < 4 and len(food_to_prepare) > 0:
                 food_to_prepare[0].prepare_time -= 1
@@ -304,10 +309,10 @@ def game_loop():
                         index = customers.index(customer)
                         customers.pop(index)
             if sit_clock >= sit_goal:
-                if len(customers) <= 10:
+                if len(customers) <= max_customers:
                     customers.append(NonPlayerCharacter())
                     sit_clock = 0
-                    sit_goal = random.randint(3, 7)
+                    sit_goal = random.randint(rate[0], rate[1])
 
         for customer in customers:
             if customer.rect.y <= player.rect.y:
@@ -328,6 +333,8 @@ def game_loop():
         for food in prepared_food:
             window.blit(food[1], food[2])
 
-        pygame.display.update()
+        timer = font.render(f"{time_left//60}:{f'{time_left % 60:02}'}", True, (0, 0, 0))
 
-game_loop()
+        window.blit(timer, (15, 10))
+
+        pygame.display.update()
