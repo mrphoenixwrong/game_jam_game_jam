@@ -13,4 +13,4 @@ while RUNNING:
             while IN_LEVEL:
                 RUNNING, IN_LEVEL = game_loop(i+1, levels[i][0], levels[i][1], levels[i][2], levels[i][3], levels[i][4])
     if RUNNING:
-        transition_loop(False, "promotion", 0, 0)
+        transition_loop(False, "WSCpromoted", 0, 0)
