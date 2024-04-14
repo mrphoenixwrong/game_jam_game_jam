@@ -449,4 +449,5 @@ def transition_loop(happiness_matters, purpose, happiness, customer_goal):
     if happiness_matters:
         return CONTINUE, RESTART
     else:
+        print(CONTINUE)
         return CONTINUE, CONTINUE
