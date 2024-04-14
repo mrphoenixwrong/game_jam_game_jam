@@ -314,6 +314,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                         customer.stand_up()
                         index = customers.index(customer)
                         customers.pop(index)
+                        
                         if customer.order_status == "too late!":
                             happiness -= 1
                         else:
@@ -321,7 +322,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                     customer.leaving -= 1
             if sit_clock >= sit_goal:
                 if len(customers) <= max_customers:
-                    customers.append(NonPlayerCharacter())
+                    customers.append(NonPlayerCharacter(player))
                     sit_clock = 0
                     sit_goal = random.randint(rate[0], rate[1])
 

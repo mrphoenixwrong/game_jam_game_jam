@@ -5,19 +5,22 @@ from lists import CHAIRS, ORDERS, CHARACTERS
 
 from food import Food
 
+from player import Player
+
 class NonPlayerCharacter:
     
-    def __init__(self):
+    def __init__(self, other):
         self.character = choice(CHARACTERS)
-        self.sit_down()
+        self.sit_down(other)
 
     # will use choice to pick a random key from the paths dictionary and go sit in the chair
-    def sit_down(self):
+    def sit_down(self, other):
         self.order_status = "just sat"
         self.anger = 999
         self.wait = randint(2,4)
 
         self.chair = choice(CHAIRS)
+        self.player_chair_check(other, self.chair)
         index = CHAIRS.index(self.chair)
         CHAIRS.pop(index)
         if self.chair[2] == "Right":
@@ -36,7 +39,14 @@ class NonPlayerCharacter:
         self.rect.topleft = (self.chair[0], self.chair[1]-40)
         self.collision_rect.topleft = (self.chair[0]+5, self.chair[1]+5)
 
-
+    def player_chair_check(self, other: Player, chair):
+        if pygame.Rect.collidepoint(other.rect, chair[0], chair[1]) == True:
+            self.chair = choice(CHAIRS)
+            print("whoop")
+            try: 
+                self.player_chair_check(other, self.chair)
+            except RecursionError:
+                pass
 
     def ready_to_order(self, can_cold):
         self.order_status = "ready to order"
