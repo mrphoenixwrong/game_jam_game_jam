@@ -18,6 +18,28 @@ class Player:
         self.speed = speed
         self.has_plate = has_plate
 
+    #managing collision with other "people"
+    def collision_up(self, other, distance):
+        if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:
+            self.collision_rect.y += distance
+            self.rect.y += distance
+
+    def collision_down(self, other, distance):
+        if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:
+            self.collision_rect.y -= distance
+            self.rect.y -= distance 
+
+    def collision_left(self, other, distance):
+        if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:
+            self.collision_rect.x += distance
+            self.rect.x += distance
+
+    def collision_right(self, other, distance):
+        if pygame.Rect.colliderect(other.rect, self.collision_rect) == True:
+            self.collision_rect.x -= distance
+            self.rect.x -= distance
+
+
     def pick_up_or_put_down(self):
         if self.has_plate:
             self.has_plate = True

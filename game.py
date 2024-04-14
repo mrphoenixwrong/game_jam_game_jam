@@ -6,6 +6,9 @@ from player import Player
 from lists import *
 from npc import NonPlayerCharacter
 
+from chef import Chef
+from random import randint, choice
+
 pygame.init()
 
 WIDTH, HEIGHT = 1000, 600
@@ -50,6 +53,10 @@ clock = pygame.time.Clock()
 def game_loop():
     world, RUNNING = createWorld()
     player = Player((850,450), 0.25, False)
+    chef = Chef((750,200))
+    direction = choice(["left", "right"])
+    chef_move_count = 0
+    
     customers = []
     foods = []
 
@@ -78,23 +85,43 @@ def game_loop():
         if key_pressed_is[K_LEFT] or key_pressed_is[K_a] and not (key_pressed_is[K_RIGHT] or key_pressed_is[K_d]):
             player.rect.x -= player.speed * dt
             player.collision_rect.x -= player.speed * dt
+            player.collision_left(chef, player.speed * dt)
+            if len(customers) > 0:
+                for i in range(0,len(customers)):
+                    player.collision_left(customers[i], player.speed * dt)
             if player.facing == "right":
                 player.turn()
             left = True
+
         if key_pressed_is[K_RIGHT] or key_pressed_is[K_d] and not (key_pressed_is[K_LEFT] or key_pressed_is[K_a]):
             player.rect.x += player.speed * dt
             player.collision_rect.x += player.speed * dt
+            player.collision_right(chef, player.speed * dt)
+            if len(customers) > 0:
+                for i in range(0,len(customers)):
+                    player.collision_right(customers[i], player.speed * dt)
             if player.facing == "left":
                 player.turn()
             right = True
+
         if key_pressed_is[K_UP] or key_pressed_is[K_w] and not (key_pressed_is[K_DOWN] or key_pressed_is[K_s]):
             player.rect.y -= player.speed * dt
             player.collision_rect.y -= player.speed * dt
+            player.collision_up(chef, player.speed * dt)
+            if len(customers) > 0:
+                for i in range(0,len(customers)):
+                    player.collision_up(customers[i], player.speed * dt)
             up = True
+
         if key_pressed_is[K_DOWN] or key_pressed_is[K_s] and not (key_pressed_is[K_UP] or key_pressed_is[K_w]):
             player.rect.y += player.speed * dt
             player.collision_rect.y += player.speed * dt
+            player.collision_down(chef, player.speed * dt)
+            if len(customers) > 0:
+                for i in range(0,len(customers)):
+                    player.collision_down(customers[i], player.speed * dt)
             down = True
+
         if key_pressed_is[K_e]:
             for customer in customers:
                 if player.collision_rect.centerx > customer.rect.centerx - TILE_SIZE and player.collision_rect.centerx < customer.rect.centerx + TILE_SIZE:
@@ -183,6 +210,24 @@ def game_loop():
                     player.rect.top = tile.rect.bottom - PLAYER_SIZE
                     player.collision_rect.top = tile.rect.bottom
 
+        #chef border collision (so they don't go into the void)
+        #left walll
+        if chef.rect.x < 751:
+            chef.rect.x = 750
+        #right wall
+        if chef.rect.x > 870:
+            chef.rect.x = 870       
+        
+        #chef idle movement
+        chance = randint(1,100)
+        if chance == 24:
+            if chef_move_count >= 10:
+                direction = choice(["left", "right"])
+                chef_move_count = 0
+            chef.cookin(direction)
+            chef_move_count += 1
+
+
         current_milli += dt
         if current_milli > 200 and player_moving:
             current_milli = 0
@@ -222,6 +267,8 @@ def game_loop():
             if customer.rect.y < player.rect.y:
                 window.blit(customer.image, customer.rect)
         window.blit(player.image, player.rect)
+        window.blit(chef.image, chef.rect)
+        
         for customer in customers:
             if customer.rect.y > player.rect.y:
                 window.blit(customer.image, customer.rect)
