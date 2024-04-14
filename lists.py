@@ -50,4 +50,5 @@ CHARACTERS = [
     "sans",
     "lucas",
     "homestar"
+    "fish"
 ]
