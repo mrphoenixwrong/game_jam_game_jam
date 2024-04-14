@@ -1,7 +1,7 @@
 import pygame
 import os
 from random import randint, choice
-from lists import CHAIRS, ORDERS, CHARACTERS
+from lists import CHAIRS, CHARACTERS
 
 from food import Food
 

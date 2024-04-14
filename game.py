@@ -54,9 +54,9 @@ clock = pygame.time.Clock()
 
 def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
     world, RUNNING = createWorld()
-    GO_TO_ENDING = True
+    CONTINUE = True
     player = Player((850,450), 0.25, False)
-    chef = Chef((750,200))
+    chef = Chef((850,200))
     direction = choice(["left", "right"])
     chef_move_count = 0
     
@@ -79,7 +79,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 RUNNING = False
-                GO_TO_ENDING = False
+                CONTINUE = False
 
         key_pressed_is = pygame.key.get_pressed()
 
@@ -140,6 +140,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                                 held_food = []
                                 player.has_plate = False
                                 customer.received_order()
+                                player.set_bar()
             if not player.has_plate and len(prepared_food) > 0:
                 if player.collision_rect.centerx > prepared_food[0][2].centerx - TILE_SIZE and player.collision_rect.centerx < prepared_food[0][2].centerx + TILE_SIZE:
                     held_food = prepared_food[0]
@@ -150,6 +151,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 if player.collision_rect.centerx > 850 and player.collision_rect.centery > 450:
                     held_food = []
                     player.has_plate = False
+                    player.set_bar()
 
         if left and right:
             if (up and not down) or (down and not up):
@@ -240,32 +242,31 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                     player.collision_rect.top = tile.rect.bottom
 
         for customer in customers:
-            pass
+            if player.collision_rect.collidepoint((customer.rect.left, tile.rect.centery)):
+                player.rect.right = tile.rect.left
+                player.collision_rect.right = tile.rect.left
+            if player.collision_rect.collidepoint((customer.rect.left, tile.rect.centery)):
+                player.rect.left = tile.rect.right
+                player.collision_rect.left = tile.rect.right
+            if player.collision_rect.collidepoint((customer.rect.left, tile.rect.centery)):
+                player.rect.bottom = tile.rect.top
+                player.collision_rect.bottom = tile.rect.top
+            if player.collision_rect.collidepoint((customer.rect.left, tile.rect.centery)):
+                player.rect.top = tile.rect.bottom - PLAYER_SIZE
+                player.collision_rect.top = tile.rect.bottom
+
 
         #chef border collision (so they don't go into the void)
         #left walll
-        if chef.rect.x < 751:
-            chef.rect.x = 750
+        if chef.rect.left < 750:
+            chef.rect.left = 750
+            chef.direction = "right"
         #right wall
-        if chef.rect.x > 870:
-            chef.rect.x = 870
-        
-        #chef idle movement
-        chance = randint(1,100)
-        if chance == 23:
-            if chef_move_count >= 10:
-                direction = choice(["left", "right"])
-                chef_move_count = 0
-            chef.cookin(direction)
-            chef_move_count += 1
+        if chef.rect.right > 900:
+            chef.rect.right = 900
+            chef.direction = "none"
 
-        current_milli += dt
-        if current_milli > 200 and player_moving:
-            current_milli = 0
-            player.walk()
-        elif not player_moving:
-            player.walking = False
-            player.walk()
+        player.place_bar()
 
         now = int(datetime.datetime.now().strftime("%S"))
         if now > last_second or (now == 0 and last_second == 59):
@@ -274,14 +275,19 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
             time_left -= 1
             if time_left == 0:
                 RUNNING = False
+                CONTINUE = True
 
             if player.has_plate:
+                if player.freeze_timer > 0:
+                        player.freeze_timer -= 1
+                        player.set_bar()
                 if player.freeze_timer == 0:
                     held_food[0] = held_food[0].replace("hot", "cold")
                     held_food[1] = pygame.image.load(os.path.join('images\\food', f'{held_food[0]}.png'))
-                player.freeze_timer -= 1
             if len(food_to_prepare) < 4 and len(food_to_prepare) > 0:
                 food_to_prepare[0].prepare_time -= 1
+                if food_to_prepare[0].prepare_time == 1:
+                    chef.direction = "left"
                 if food_to_prepare[0].prepare_time == 0:
                     food_item = food_to_prepare[0]
                     food_to_prepare.pop(0)
@@ -326,6 +332,19 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                     customers.append(NonPlayerCharacter(player))
                     sit_clock = 0
                     sit_goal = random.randint(rate[0], rate[1])
+            
+        chef.move(dt)
+
+
+        current_milli += dt
+        if current_milli > 200:
+            chef.switch_image()
+            current_milli = 0
+            if player_moving:
+                player.walk()
+            else:
+                player.walking = False
+                player.walk()
 
         for customer in customers:
             if customer.rect.y <= player.rect.y:
@@ -346,6 +365,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 if customer.order_status == "waiting for food" or customer.order_status == "food prepared":
                     window.blit(customer.food_image, customer.food_rect)
             window.blit(customer.bar, customer.bar_rect)
+            window.blit(player.bar, player.bar_rect)
 
 
         
@@ -362,5 +382,30 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
 
         pygame.display.update()
 
-    
-    return GO_TO_ENDING
+    print("we made it!")
+    if CONTINUE:
+        if happiness >= customer_goal:
+            ending_card = pygame.image.load(os.path.join("images\\screens", "win.png"))
+            RESTART = False
+            print("we won :)")
+        else:
+            ending_card = pygame.image.load(os.path.join("images\\screens", "lose.png"))
+            RESTART = True
+            print('we failed :(')
+
+        RUNNING = True
+        while RUNNING:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    RUNNING = False
+                    CONTINUE = False
+                    RESTART = False
+            key_pressed_is = pygame.key.get_pressed()
+            if key_pressed_is[K_RETURN]:
+                RUNNING = False
+            window.blit(ending_card, (0,0))
+
+            pygame.display.update()
+    else:
+        RESTART = False
+    return CONTINUE, RESTART

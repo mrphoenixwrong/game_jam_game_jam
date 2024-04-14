@@ -1,6 +1,6 @@
 import pygame
 import os
-from random import randint, choice
+from random import choice
 from lists import *
 
 class Food:

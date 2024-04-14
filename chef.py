@@ -1,13 +1,12 @@
-import pygame, random
+import pygame, os
 
 
 class Chef:  
 
     def __init__(self,coordinates):
-        miku = pygame.image.load("images/chef/chefCook1.png")
-        self.image = pygame.transform.scale(miku, (50,75))
-        self.img_rect = self.image.get_rect()
-        self.rect = pygame.surface.Surface((50, 60)).get_rect()
+        self.frame = 1
+        self.image = pygame.image.load(os.path.join("images\\chef", f"chefWalk{self.frame}.png"))
+        self.rect = self.image.get_rect()
 
         self.collision_rect = pygame.surface.Surface((40, 40)).get_rect()
 
@@ -16,12 +15,20 @@ class Chef:
 
         self.rect.topleft = (self.x, self.y)
         self.collision_rect.topleft = (self.x, self.y + 40)
+        self.direction = "none"
 
-
-    def cookin(self, direction: str):
-        if direction == "right":
-            self.rect.x += 2
-            self.img_rect.x += 2
+    def switch_image(self):
+        if self.frame == 1:
+            self.frame = 2
         else:
-           self.rect.x -= 2
-           self.img_rect.x -= 2
+            self.frame = 1
+        self.image = pygame.image.load(os.path.join("images\\chef", f"chefWalk{self.frame}.png"))
+
+
+    def move(self, dt):
+        if self.direction == "right":
+            self.rect.x += 0.1 * dt
+            self.collision_rect.x += 0.1 * dt
+        elif self.direction == "left":
+           self.rect.x -= 0.10 * dt
+           self.collision_rect.x -= 0.1 * dt

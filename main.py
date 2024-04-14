@@ -9,4 +9,6 @@ while RUNNING:
      #   title_loop()
     for i in range(0, 5):
         if RUNNING:
-            RUNNING = game_loop(i+1, levels[i][0], levels[i][1], levels[i][2], levels[i][3], levels[i][4])
+            IN_LEVEL = True
+            while IN_LEVEL:
+                RUNNING, IN_LEVEL = game_loop(i+1, levels[i][0], levels[i][1], levels[i][2], levels[i][3], levels[i][4])

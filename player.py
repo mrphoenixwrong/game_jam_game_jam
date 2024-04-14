@@ -18,6 +18,8 @@ class Player:
         self.speed = speed
         self.has_plate = has_plate
 
+        self.set_bar()
+
     #player rect getter (pythonic)
     @property
     def rect(self):
@@ -58,6 +60,18 @@ class Player:
     def put_down(self):
         if self.has_plate:
             self.has_plate = False
+
+    def set_bar(self):
+        if self.has_plate:
+            self.bar = pygame.surface.Surface((self.freeze_timer*10, 5))
+            self.bar.fill((5+(self.freeze_timer * 50), 255-(self.freeze_timer * 50), 255-(self.freeze_timer * 50)))
+        else:
+            self.bar = pygame.surface.Surface((0, 0))
+        self.place_bar()
+    
+    def place_bar(self):
+        self.bar_rect = self.bar.get_rect()
+        self.bar_rect.center = (self.rect.centerx, self.rect.top + 3)
 
     def turn(self):
         if self.facing == "left":

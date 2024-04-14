@@ -30,8 +30,6 @@ ORDERS = [
     ("soup", 50), 
     ("steak", 100),
     ("pie", 25)]
-   # "bird leg"
-#]
 
 HEAT = [
     "hot",
