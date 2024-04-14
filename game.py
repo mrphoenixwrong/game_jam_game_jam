@@ -344,10 +344,13 @@ def game_loop(day, time_left, rate, max_customers, can_cold):
         day_text = font.render(f"DAY {day}", True, (0, 0, 0))
         timer = font.render(f"{time_left//60}:{f'{time_left % 60:02}'}", True, (0, 0, 0))
         happiness_meter = font.render(f"{happiness}", True, (0, 0, 0))
+        happiness_rect = happiness_meter.get_rect()
+        happiness_rect.centerx = 500
+        happiness_rect.top = 10
 
         window.blit(day_text, (15, 10))
         window.blit(timer, (920, 10))
-        window.blit(happiness_meter, (375, 10))
+        window.blit(happiness_meter, happiness_rect)
 
         pygame.display.update()
     
