@@ -28,7 +28,8 @@ CHAIRS = [
 
 ORDERS = [
     "soup", 
-    "steak"]
+    "steak",
+    "pie"]
    # "bird leg"
 #]
 
@@ -45,5 +46,6 @@ FOOD_SPAWNS = [
 ]
 
 CHARACTERS = [
-    "manly"
+    "manly",
+    "sans"
 ]

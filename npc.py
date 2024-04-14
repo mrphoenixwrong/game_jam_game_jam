@@ -65,7 +65,10 @@ class NonPlayerCharacter:
 
         coordinates = self.rect.topleft
 
-        self.image = pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}Angry.png'))
+        if self.chair[2] == "Right":
+            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png')), True, False)
+        else:
+            self.image = pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}Angry.png'))
         self.rect = self.image.get_rect()
         self.rect.topleft = coordinates
     
