@@ -64,6 +64,9 @@ def title_loop():
     credits_button = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 20).render(f"CREDITS", True, (255, 255, 255))
     credits_rect = credits_button.get_rect(center=((950-560)/2 + 560, (584-536)/2 + 536))
 
+    pygame.mixer.music.load(os.path.join('music', 'Chilly Menu - Worst Served Cold OST(1).mp3'))
+    pygame.mixer.music.play(-1)
+
     RUNNING = True
     while RUNNING:
         for event in pygame.event.get():
@@ -106,7 +109,8 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
     happiness = 0
 
     e_released = True
-
+    pygame.mixer.music.load(os.path.join('music', 'Chilly Menu - Worst Served Cold OST(1).mp3'))
+    pygame.mixer.music.play(-1)
     while RUNNING:
         dt = clock.tick(60)
 
