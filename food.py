@@ -4,8 +4,8 @@ from random import randint, choice
 from lists import *
 
 class Food:
-    def __init__(self, type):
-        self.type = type
+    def __init__(self):
+        self.type = choice(ORDERS)
+        self.hot = choice(HEAT)
 
-        self.image = pygame.image.load(os.path.join('images', f'{type}.png'))
-        self.rect = self.image.get_rect()
+        self.image = pygame.image.load(os.path.join('images\\food', f'{self.type}_{self.hot}.png'))

@@ -58,6 +58,7 @@ def game_loop():
     chef_move_count = 0
     
     customers = []
+    customer_thoughts = []
     foods = []
 
     last_second = int(datetime.datetime.now().strftime("%S"))
@@ -228,21 +229,16 @@ def game_loop():
 
         current_milli += dt
         if current_milli > 200 and player_moving:
-            print(current_milli)
             current_milli = 0
             player.walk()
         elif not player_moving:
             player.walking = False
             player.walk()
 
-
-
-
         now = int(datetime.datetime.now().strftime("%S"))
         if now > last_second or (now == 0 and last_second == 59):
             last_second = now
             sit_clock += 1
-            print(sit_clock)
             for customer in customers:
                 if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
                     customer.anger -= 1
@@ -264,12 +260,20 @@ def game_loop():
                     sit_clock = 0
                     sit_goal = random.randint(3, 7)
 
-        if len(customers) > 0:
-            for customer in customers:
+        for customer in customers:
+            if customer.rect.y < player.rect.y:
                 window.blit(customer.image, customer.rect)
         window.blit(player.image, player.rect)
         window.blit(chef.image, chef.rect)
         
+        for customer in customers:
+            if customer.rect.y > player.rect.y:
+                window.blit(customer.image, customer.rect)
+        for customer in customers:
+            if customer.order_status == "ready to order" or customer.order_status == "waiting for food":
+                window.blit(customer.thought_image, customer.thought_rect)
+                if customer.order_status == "waiting for food":
+                    window.blit(customer.food_image, customer.food_rect)
 
         pygame.display.update()
 
