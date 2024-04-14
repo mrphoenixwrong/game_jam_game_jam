@@ -426,18 +426,22 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
 
         pygame.display.update()
 
+    pygame.mixer.music.stop()
     if CONTINUE:
         return transition_loop(True, False, happiness, customer_goal)
     return False, False
 
 
 def transition_loop(happiness_matters, purpose, happiness, customer_goal):
+    
     if happiness_matters:
         if happiness >= customer_goal:
                 screen_card = pygame.image.load(os.path.join("images\\screens", "win.png"))
                 RESTART = False
         else:
-            screen_card = pygame.image.load(os.path.join("images\\screens", "lose.png"))
+            pygame.mixer.music.load(os.path.join('music', 'wompwomp.mp3'))
+            pygame.mixer.music.play(1)
+            screen_card = pygame.image.load(os.path.join("images\\screens", "WSCfired.png"))
             RESTART = True
     else:
         screen_card = pygame.image.load(os.path.join("images\\screens", f"{purpose}.png"))
