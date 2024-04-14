@@ -58,7 +58,6 @@ def game_loop():
     chef_move_count = 0
     
     customers = []
-    foods = []
     food_to_prepare = []
     prepared_food = []
 
@@ -131,10 +130,21 @@ def game_loop():
                         if customer.order_status == "ready to order":
                             customer.order_taken()
                             food_to_prepare.append(customer.order)
-                            print(food_to_prepare)
-            for food in foods:
-                if player.collision_rect.centerx > food.rect.centerx - TILE_SIZE:
-                    pass
+                        elif customer.order_status == "waiting for food" and player.has_plate:
+                            if held_food[0] == customer.order.full_order:
+                                held_food = []
+                                player.has_plate = False
+                                earnings += customer.received_order()
+                                print(customer.leaving)
+                                print(customer.order_status)
+                                print(earnings)
+            if not player.has_plate and len(prepared_food) > 0:
+                if player.collision_rect.centerx > prepared_food[0][2].centerx - TILE_SIZE and player.collision_rect.centerx < prepared_food[0][2].centerx + TILE_SIZE:
+                    held_food = prepared_food[0]
+                    prepared_food.pop(0)
+                    player.has_plate = True
+                    FOOD_SPAWNS.append(held_food[2].topleft)
+
         
         if left and right:
             if (up and not down) or (down and not up):
@@ -150,6 +160,16 @@ def game_loop():
             player_moving = True
         else:
             player_moving = False
+
+        if player.has_plate:
+            if player.facing == "left":
+                held_food[1] = pygame.transform.flip(pygame.image.load(os.path.join('images\\food', f'{food[0]}.png')), True, False)
+                held_food[2].centerx = player.rect.centerx + 15
+            
+            elif player.facing == "right":
+                held_food[1] = pygame.transform.flip(pygame.image.load(os.path.join('images\\food', f'{food[0]}.png')), True, False)
+                held_food[2].centerx = player.rect.centerx - 15
+            held_food[2].y = player.rect.top + 12
 
 
         # Collision Detection
@@ -223,7 +243,7 @@ def game_loop():
             chef.rect.x = 750
         #right wall
         if chef.rect.x > 870:
-            chef.rect.x = 870       
+            chef.rect.x = 870
         
         #chef idle movement
         chance = randint(1,100)
@@ -253,10 +273,11 @@ def game_loop():
                     food_item = food_to_prepare[0]
                     food_to_prepare.pop(0)
 
-                    location = choice(FOOD_SPAWNS)
-                    index = FOOD_SPAWNS.index(location)
+                    coordinates = choice(FOOD_SPAWNS)
+                    index = FOOD_SPAWNS.index(coordinates)
                     FOOD_SPAWNS.pop(index)
-                    prepared_food.append((food_item, food_item.hot_image, (location[0], location[1])))
+                    food_item.cook_dish(coordinates)
+                    prepared_food.append([food_item.full_order, food_item.hot_image, food_item.hot_rect])
 
             for customer in customers:
                 if customer.order_status == "just sat":
@@ -276,8 +297,6 @@ def game_loop():
                     customer.anger -= 1
                     if customer.anger == 0:
                         customer.karen()
-                if customer.order_status == "order complete":
-                    earnings += customer.received_order()
                 if customer.order_status == "too late!" or customer.order_status == "order complete":
                     customer.leaving -= 1
                     if customer.leaving == 0:
@@ -294,6 +313,8 @@ def game_loop():
             if customer.rect.y <= player.rect.y:
                 window.blit(customer.image, customer.rect)
         window.blit(player.image, player.rect)
+        if player.has_plate:
+            window.blit(held_food[1], held_food[2])
         window.blit(chef.image, chef.rect)
         
         for customer in customers:

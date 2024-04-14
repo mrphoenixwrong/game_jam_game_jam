@@ -22,13 +22,13 @@ class NonPlayerCharacter:
         CHAIRS.pop(index)
         if self.chair[2] == "Right":
             self.default_image = f"{self.character}Side"
-            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png')), True, False)
+            self.image = pygame.transform.flip(pygame.image.load(os.path.join(f'images\\NPCs\\{self.character}', f'{self.default_image}.png')), True, False)
         else:
             if self.chair[2] == "Left":
                 self.default_image = f"{self.character}Side"
             else:
                 self.default_image = f"{self.character}{self.chair[2]}"
-            self.image = pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png'))
+            self.image = pygame.image.load(os.path.join(f'images\\NPCs\\{self.character}', f'{self.default_image}.png'))
         self.rect = self.image.get_rect()
 
         self.collision_rect = pygame.surface.Surface((40, 40)).get_rect()
@@ -71,9 +71,9 @@ class NonPlayerCharacter:
         coordinates = self.rect.topleft
 
         if self.chair[2] == "Right":
-            self.image = pygame.transform.flip(pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png')), True, False)
+            self.image = pygame.transform.flip(pygame.image.load(os.path.join(f'images\\NPCs\\{self.character}', f'{self.default_image}Angry.png')), True, False)
         else:
-            self.image = pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}Angry.png'))
+            self.image = pygame.image.load(os.path.join(f'images\\NPCs\\{self.character}', f'{self.default_image}Angry.png'))
         self.rect = self.image.get_rect()
         self.rect.topleft = coordinates
     
