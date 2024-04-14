@@ -16,6 +16,12 @@ class Food:
         self.image = pygame.image.load(os.path.join('images\\food', f'{self.type}_{self.hot}.png'))
         self.rect = self.image.get_rect()
 
+        self.hot_image = pygame.image.load(os.path.join('images\\food', f'{self.type}_hot.png'))
+        self.hot_rect = self.hot_image.get_rect()
+
+        self.cold_image = pygame.image.load(os.path.join('images\\food', f'{self.type}_cold.png'))
+        self.cold_rect = self.cold_image.get_rect()
+
     def __str__(self):
         meal = self.full_order
         return meal

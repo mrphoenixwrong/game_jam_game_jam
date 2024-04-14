@@ -256,7 +256,7 @@ def game_loop():
                     location = choice(FOOD_SPAWNS)
                     index = FOOD_SPAWNS.index(location)
                     FOOD_SPAWNS.pop(index)
-                    prepared_food.append((food_item, food_item.image, (location[0], location[1])))
+                    prepared_food.append((food_item, food_item.hot_image, (location[0], location[1])))
 
             for customer in customers:
                 if customer.order_status == "just sat":
