@@ -54,7 +54,7 @@ class NonPlayerCharacter:
             self.bar.fill((0, 0, 0))
     
         self.bar_rect = self.bar.get_rect()
-        self.bar_rect.center = (self.rect.centerx, self.rect.top - 2)
+        self.bar_rect.center = (self.rect.centerx, self.rect.top + 3)
 
     def ready_to_order(self, can_cold):
         self.order_status = "ready to order"
