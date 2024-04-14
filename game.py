@@ -389,7 +389,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                         customers.pop(index)
                         
                         if customer.order_status == "too late!":
-                            happiness -= 1
+                            pass
                         else:
                             happiness += 1
                     customer.leaving -= 1
