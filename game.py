@@ -52,7 +52,7 @@ def createWorld():
 clock = pygame.time.Clock()
 
 
-def game_loop(day, time_left, rate, max_customers, can_cold):
+def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
     world, RUNNING = createWorld()
     GO_TO_ENDING = True
     player = Player((850,450), 0.25, False)
@@ -343,7 +343,7 @@ def game_loop(day, time_left, rate, max_customers, can_cold):
         
         day_text = font.render(f"DAY {day}", True, (0, 0, 0))
         timer = font.render(f"{time_left//60}:{f'{time_left % 60:02}'}", True, (0, 0, 0))
-        happiness_meter = font.render(f"{happiness}", True, (0, 0, 0))
+        happiness_meter = font.render(f"{happiness}/{customer_goal}", True, (0, 0, 0))
         happiness_rect = happiness_meter.get_rect()
         happiness_rect.centerx = 500
         happiness_rect.top = 10
@@ -353,5 +353,6 @@ def game_loop(day, time_left, rate, max_customers, can_cold):
         window.blit(happiness_meter, happiness_rect)
 
         pygame.display.update()
+
     
     return GO_TO_ENDING

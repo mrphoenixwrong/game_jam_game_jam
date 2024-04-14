@@ -52,7 +52,7 @@ class NonPlayerCharacter:
     # will use choice to pick from list of 3 foods , maybe start the timer too
     def order_taken(self):
         self.order_status = "waiting for food"
-        self.anger = 30
+        self.anger = 15
 
         self.food_image = pygame.image.load(os.path.join('images\\food', f'{self.order.type}_{self.order.hot}.png'))
         self.food_rect = self.food_image.get_rect()
