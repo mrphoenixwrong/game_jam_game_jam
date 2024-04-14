@@ -264,7 +264,7 @@ def game_loop():
                     sit_goal = random.randint(3, 7)
 
         for customer in customers:
-            if customer.rect.y < player.rect.y:
+            if customer.rect.y <= player.rect.y:
                 window.blit(customer.image, customer.rect)
         window.blit(player.image, player.rect)
         window.blit(chef.image, chef.rect)

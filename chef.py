@@ -9,12 +9,13 @@ class Chef:
         self.img_rect = self.image.get_rect()
         self.rect = pygame.surface.Surface((50, 60)).get_rect()
 
+        self.collision_rect = pygame.surface.Surface((40, 40)).get_rect()
 
-        #pygame.transform.scale(self.rect, (40,40))
         self.x = coordinates[0]
         self.y = coordinates[1]
 
         self.rect.topleft = (self.x, self.y)
+        self.collision_rect.topleft = (self.x, self.y + 40)
 
 
     def cookin(self, direction: str):
@@ -24,4 +25,3 @@ class Chef:
         else:
            self.rect.x -= 2
            self.img_rect.x -= 2
-           

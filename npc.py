@@ -30,7 +30,11 @@ class NonPlayerCharacter:
                 self.default_image = f"{self.character}{self.chair[2]}"
             self.image = pygame.image.load(os.path.join('images\\NPCs', f'{self.default_image}.png'))
         self.rect = self.image.get_rect()
+
+        self.collision_rect = pygame.surface.Surface((40, 40)).get_rect()
+
         self.rect.topleft = (self.chair[0], self.chair[1]-40)
+        self.collision_rect.topleft = (self.chair[0], self.chair[1])
 
 
 
