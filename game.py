@@ -52,7 +52,7 @@ def createWorld():
 clock = pygame.time.Clock()
 
 
-def game_loop(time_left, rate, max_customers):
+def game_loop(day, time_left, rate, max_customers, can_cold):
     world, RUNNING = createWorld()
     GO_TO_ENDING = True
     player = Player((850,450), 0.25, False)
@@ -69,7 +69,7 @@ def game_loop(time_left, rate, max_customers):
     sit_clock = 0
     sit_goal = random.randint(rate[0], rate[1])
 
-    people_served = 0
+    happiness = 0
 
     while RUNNING:
         dt = clock.tick(60)
@@ -130,7 +130,7 @@ def game_loop(time_left, rate, max_customers):
         if key_pressed_is[K_e]:
             for customer in customers:
                 if player.collision_rect.centerx > customer.rect.centerx - TILE_SIZE and player.collision_rect.centerx < customer.rect.centerx + TILE_SIZE:
-                    if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE:
+                    if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE + 20:
                         if customer.order_status == "ready to order":
                             customer.order_taken()
                             food_to_prepare.append(customer.order)
@@ -139,15 +139,13 @@ def game_loop(time_left, rate, max_customers):
                                 held_food = []
                                 player.has_plate = False
                                 customer.received_order()
-                                people_served += 1
             if not player.has_plate and len(prepared_food) > 0:
                 if player.collision_rect.centerx > prepared_food[0][2].centerx - TILE_SIZE and player.collision_rect.centerx < prepared_food[0][2].centerx + TILE_SIZE:
                     held_food = prepared_food[0]
                     prepared_food.pop(0)
-                    player.has_plate = True
+                    player.pick_up()
                     FOOD_SPAWNS.append(held_food[2].topleft)
 
-        
         if left and right:
             if (up and not down) or (down and not up):
                 player_moving = True
@@ -165,11 +163,11 @@ def game_loop(time_left, rate, max_customers):
 
         if player.has_plate:
             if player.facing == "left":
-                held_food[1] = pygame.transform.flip(pygame.image.load(os.path.join('images\\food', f'{food[0]}.png')), True, False)
+                held_food[1] = pygame.transform.flip(pygame.image.load(os.path.join('images\\food', f'{held_food[0]}.png')), True, False)
                 held_food[2].centerx = player.rect.centerx + 15
             
             elif player.facing == "right":
-                held_food[1] = pygame.transform.flip(pygame.image.load(os.path.join('images\\food', f'{food[0]}.png')), True, False)
+                held_food[1] = pygame.transform.flip(pygame.image.load(os.path.join('images\\food', f'{held_food[0]}.png')), True, False)
                 held_food[2].centerx = player.rect.centerx - 15
             held_food[2].y = player.rect.top + 12
 
@@ -272,6 +270,11 @@ def game_loop(time_left, rate, max_customers):
             if time_left == 0:
                 RUNNING = False
 
+            if player.has_plate:
+                if player.freeze_timer == 0:
+                    held_food[0] = held_food[0].replace("hot", "cold")
+                    held_food[1] = pygame.image.load(os.path.join('images\\food', f'{held_food[0]}.png'))
+                player.freeze_timer -= 1
             if len(food_to_prepare) < 4 and len(food_to_prepare) > 0:
                 food_to_prepare[0].prepare_time -= 1
                 if food_to_prepare[0].prepare_time == 0:
@@ -282,32 +285,36 @@ def game_loop(time_left, rate, max_customers):
                     index = FOOD_SPAWNS.index(coordinates)
                     FOOD_SPAWNS.pop(index)
                     food_item.cook_dish(coordinates)
-                    prepared_food.append([food_item.full_order, food_item.hot_image, food_item.hot_rect])
+                    prepared_food.append([f"{food_item.type}_hot", food_item.hot_image, food_item.hot_rect])
 
             for customer in customers:
                 if customer.order_status == "just sat":
-                    customer.wait -= 1
                     if customer.wait == 0:
-                        customer.ready_to_order()
+                        customer.ready_to_order(can_cold)
+                    customer.wait -= 1
                 if customer.order_status == "ready to order":
-                    customer.anger -= 1
                     if customer.anger == 0:
                         customer.karen()
-                if customer.order_status == "waiting for food":
                     customer.anger -= 1
+                if customer.order_status == "waiting for food":
                     if customer.anger == 0:
                         customer.karen()
                         customer.order_status = "food prepared"
-                if customer.order_status == "waiting for food":
                     customer.anger -= 1
+                if customer.order_status == "food prepared":
                     if customer.anger == 0:
                         customer.karen()
+                    customer.anger -= 1
                 if customer.order_status == "too late!" or customer.order_status == "order complete":
-                    customer.leaving -= 1
                     if customer.leaving == 0:
                         customer.stand_up()
                         index = customers.index(customer)
                         customers.pop(index)
+                        if customer.order_status == "too late!":
+                            happiness -= 1
+                        else:
+                            happiness += 1
+                    customer.leaving -= 1
             if sit_clock >= sit_goal:
                 if len(customers) <= max_customers:
                     customers.append(NonPlayerCharacter())
@@ -333,8 +340,15 @@ def game_loop(time_left, rate, max_customers):
         for food in prepared_food:
             window.blit(food[1], food[2])
 
+        
+        day_text = font.render(f"DAY {day}", True, (0, 0, 0))
         timer = font.render(f"{time_left//60}:{f'{time_left % 60:02}'}", True, (0, 0, 0))
+        happiness_meter = font.render(f"{happiness}", True, (0, 0, 0))
 
-        window.blit(timer, (15, 10))
+        window.blit(day_text, (15, 10))
+        window.blit(timer, (920, 10))
+        window.blit(happiness_meter, (375, 10))
 
         pygame.display.update()
+    
+    return GO_TO_ENDING

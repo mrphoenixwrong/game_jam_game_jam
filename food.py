@@ -4,11 +4,14 @@ from random import randint, choice
 from lists import *
 
 class Food:
-    def __init__(self):
+    def __init__(self, can_cold):
         food = choice(ORDERS)
         self.type = food[0]
         self.price = food[1]
-        self.hot = choice(HEAT)
+        if can_cold:
+            self.hot = choice(HEAT)
+        else:
+            self.hot = "hot"
 
         self.full_order = f"{self.type}_{self.hot}"
         self.prepare_time = 5

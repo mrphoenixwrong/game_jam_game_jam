@@ -40,10 +40,13 @@ class Player:
             self.rect.x -= distance
 
 
-    def pick_up_or_put_down(self):
-        if self.has_plate:
+    def pick_up(self):
+        if not self.has_plate:
             self.has_plate = True
-        else:
+            self.freeze_timer = 5
+
+    def put_down(self):
+        if self.has_plate:
             self.has_plate = False
 
     def turn(self):

@@ -34,15 +34,15 @@ class NonPlayerCharacter:
         self.collision_rect = pygame.surface.Surface((40, 40)).get_rect()
 
         self.rect.topleft = (self.chair[0], self.chair[1]-40)
-        self.collision_rect.topleft = (self.chair[0], self.chair[1])
+        self.collision_rect.topleft = (self.chair[0]+5, self.chair[1]+5)
 
 
 
-    def ready_to_order(self):
+    def ready_to_order(self, can_cold):
         self.order_status = "ready to order"
         self.anger = 10
 
-        self.order = Food()
+        self.order = Food(can_cold)
 
         self.thought_image = pygame.image.load(os.path.join('images\\food', 'thought_bubble.png'))
         self.thought_rect = self.thought_image.get_rect()
