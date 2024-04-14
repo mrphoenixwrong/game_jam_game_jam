@@ -14,9 +14,6 @@ class Food:
 
         self.image = pygame.image.load(os.path.join('images\\food', f'{self.type}_{self.hot}.png'))
         self.rect = self.image.get_rect()
-    
-    def spawn(self, coordinates):
-        self.rect.topleft = coordinates
 
     def __str__(self):
         meal = self.full_order

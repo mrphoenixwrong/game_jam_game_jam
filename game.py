@@ -268,8 +268,7 @@ def game_loop():
                         location = choice(FOOD_SPAWNS)
                         index = FOOD_SPAWNS.index(location)
                         FOOD_SPAWNS.pop(index)
-                        customer.order.spawn(location)
-                        prepared_food.append(((customer.order.full_order), customer.order.image, (customer.order.rect.x+12, customer.order.rect.y+12)))
+                        prepared_food.append(((customer.order.full_order), customer.order.image, (location[0], location[1])))
 
                         customer.order_status = "food prepared"
                 if customer.order_status == "waiting for food":
