@@ -294,22 +294,22 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
 
             for customer in customers:
                 if customer.order_status == "just sat":
+                    customer.wait -= 1
                     if customer.wait == 0:
                         customer.ready_to_order(can_cold)
-                    customer.wait -= 1
                 if customer.order_status == "ready to order":
+                    customer.more_angry()
                     if customer.anger == 0:
                         customer.karen()
-                    customer.more_angry()
                 if customer.order_status == "waiting for food":
+                    customer.more_angry()
                     if customer.anger == 0:
                         customer.karen()
-                    customer.more_angry()
                 if customer.order_status == "food prepared":
+                    customer.more_angry()
                     if customer.anger == 0:
                         customer.karen()
                         print("mad and should leave")
-                    customer.more_angry()
                 if customer.order_status == "too late!" or customer.order_status == "order complete":
                     if customer.leaving == 0:
                         customer.stand_up()

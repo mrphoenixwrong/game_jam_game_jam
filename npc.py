@@ -63,10 +63,9 @@ class NonPlayerCharacter:
             self.bar.fill((255-(self.anger * 16), 15+(self.anger * 16), 0))
         else:
             self.bar = pygame.surface.Surface((0, 5))
-            self.bar.fill((0, 0, 0))
     
         self.bar_rect = self.bar.get_rect()
-        self.bar_rect.center = (self.rect.centerx, self.rect.top - 2)
+        self.bar_rect.center = (self.rect.centerx, self.rect.top + 3)
 
     def ready_to_order(self, can_cold):
         self.order_status = "ready to order"
@@ -92,6 +91,11 @@ class NonPlayerCharacter:
     def received_order(self):
         self.order_status = "order complete"
         self.leaving = 5
+
+        self.bar = pygame.surface.Surface((0, 5))
+
+        self.bar_rect = self.bar.get_rect()
+        self.bar_rect.center = (self.rect.centerx, self.rect.top + 3)
         return self.order.price
 
     def karen(self):
