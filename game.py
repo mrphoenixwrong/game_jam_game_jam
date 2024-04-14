@@ -350,19 +350,20 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 if player.freeze_timer == 0:
                     held_food[0] = held_food[0].replace("hot", "cold")
                     held_food[1] = pygame.image.load(os.path.join('images\\food', f'{held_food[0]}.png'))
-            if len(food_to_prepare) < 4 and len(food_to_prepare) > 0:
-                food_to_prepare[0].prepare_time -= 1
-                if food_to_prepare[0].prepare_time == 1:
-                    chef.direction = "left"
-                if food_to_prepare[0].prepare_time == 0 and len(prepared_food) < 4:
-                    food_item = food_to_prepare[0]
-                    food_to_prepare.pop(0)
-
-                    coordinates = choice(FOOD_SPAWNS)
-                    index = FOOD_SPAWNS.index(coordinates)
-                    FOOD_SPAWNS.pop(index)
-                    food_item.cook_dish(coordinates)
-                    prepared_food.append([f"{food_item.type}_hot", food_item.hot_image, food_item.hot_rect])
+            if len(FOOD_SPAWNS) > 0:
+                if len(food_to_prepare) < 4 and len(food_to_prepare) > 0:    
+                    food_to_prepare[0].prepare_time -= 1
+                    if food_to_prepare[0].prepare_time == 1:
+                        chef.direction = "left"
+                    if food_to_prepare[0].prepare_time == 0 and len(prepared_food) < 4:
+                        food_item = food_to_prepare[0]
+                        food_to_prepare.pop(0)
+                    
+                        coordinates = choice(FOOD_SPAWNS)
+                        index = FOOD_SPAWNS.index(coordinates)
+                        FOOD_SPAWNS.pop(index)
+                        food_item.cook_dish(coordinates)
+                        prepared_food.append([f"{food_item.type}_hot", food_item.hot_image, food_item.hot_rect])
 
             for customer in customers:
                 if customer.order_status == "just sat":
