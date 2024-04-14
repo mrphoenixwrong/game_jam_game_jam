@@ -51,13 +51,14 @@ def game_loop():
     world, RUNNING = createWorld()
     player = Player((850,450), 0.25, False)
     customers = []
-    customer_thoughts = []
     foods = []
 
     last_second = int(datetime.datetime.now().strftime("%S"))
     current_milli = 0
     sit_clock = 0
     sit_goal = random.randint(3, 7)
+
+    earnings = 0
 
     while RUNNING:
         dt = clock.tick(60)
@@ -203,6 +204,8 @@ def game_loop():
                     customer.wait -= 1
                     if customer.wait == 0:
                         customer.ready_to_order()
+                if customer.order_status == "order complete":
+                    earnings += customer.received_order()
                 if customer.order_status == "too late!" or customer.order_status == "order complete":
                     customer.leaving -= 1
                     if customer.leaving == 0:

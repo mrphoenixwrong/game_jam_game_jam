@@ -27,9 +27,9 @@ CHAIRS = [
 ]
 
 ORDERS = [
-    "soup", 
-    "steak",
-    "pie"]
+    ("soup", 50), 
+    ("steak", 100),
+    ("pie", 25)]
    # "bird leg"
 #]
 

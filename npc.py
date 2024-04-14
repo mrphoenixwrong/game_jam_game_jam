@@ -59,6 +59,7 @@ class NonPlayerCharacter:
     def received_order(self):
         self.order_status = "order complete"
         self.leaving = 5
+        return self.order.price
 
     def karen(self):
         self.order_status = "too late!"
