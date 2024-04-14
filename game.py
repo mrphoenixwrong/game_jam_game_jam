@@ -134,6 +134,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                         if customer.order_status == "ready to order":
                             customer.order_taken()
                             food_to_prepare.append(customer.order)
+                            customer.set_bar()
                         elif customer.order_status == "waiting for food" and player.has_plate:
                             if held_food[0] == customer.order.full_order:
                                 held_food = []
@@ -299,16 +300,16 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 if customer.order_status == "ready to order":
                     if customer.anger == 0:
                         customer.karen()
-                    customer.anger -= 1
+                    customer.more_angry()
                 if customer.order_status == "waiting for food":
                     if customer.anger == 0:
                         customer.karen()
-                    customer.anger -= 1
+                    customer.more_angry()
                 if customer.order_status == "food prepared":
                     if customer.anger == 0:
                         customer.karen()
                         print("mad and should leave")
-                    customer.anger -= 1
+                    customer.more_angry()
                 if customer.order_status == "too late!" or customer.order_status == "order complete":
                     if customer.leaving == 0:
                         customer.stand_up()
@@ -332,8 +333,10 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
         window.blit(player.image, player.rect)
         if player.has_plate:
             window.blit(held_food[1], held_food[2])
+        for food in prepared_food:
+            window.blit(food[1], food[2])
         window.blit(chef.image, chef.rect)
-        
+
         for customer in customers:
             if customer.rect.y > player.rect.y:
                 window.blit(customer.image, customer.rect)
@@ -342,8 +345,8 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 window.blit(customer.thought_image, customer.thought_rect)
                 if customer.order_status == "waiting for food" or customer.order_status == "food prepared":
                     window.blit(customer.food_image, customer.food_rect)
-        for food in prepared_food:
-            window.blit(food[1], food[2])
+            window.blit(customer.bar, customer.bar_rect)
+
 
         
         day_text = font.render(f"DAY {day}", True, (0, 0, 0))
