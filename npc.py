@@ -53,7 +53,6 @@ class NonPlayerCharacter:
     def order_taken(self):
         self.order_status = "waiting for food"
         self.anger = 30
-        self.prepare_time = 5
 
         self.food_image = pygame.image.load(os.path.join('images\\food', f'{self.order.type}_{self.order.hot}.png'))
         self.food_rect = self.food_image.get_rect()

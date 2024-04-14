@@ -130,7 +130,7 @@ def game_loop():
                     if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE:
                         if customer.order_status == "ready to order":
                             customer.order_taken()
-                            food_to_prepare.append(str(customer.order))
+                            food_to_prepare.append(customer.order)
                             print(food_to_prepare)
             for food in foods:
                 if player.collision_rect.centerx > food.rect.centerx - TILE_SIZE:
@@ -246,6 +246,18 @@ def game_loop():
         if now > last_second or (now == 0 and last_second == 59):
             last_second = now
             sit_clock += 1
+
+            if len(food_to_prepare) < 4 and len(food_to_prepare) > 0:
+                food_to_prepare[0].prepare_time -= 1
+                if food_to_prepare[0].prepare_time == 0:
+                    food_item = food_to_prepare[0]
+                    food_to_prepare.pop(0)
+
+                    location = choice(FOOD_SPAWNS)
+                    index = FOOD_SPAWNS.index(location)
+                    FOOD_SPAWNS.pop(index)
+                    prepared_food.append((food_item, food_item.image, (location[0], location[1])))
+
             for customer in customers:
                 if customer.order_status == "just sat":
                     customer.wait -= 1
@@ -257,19 +269,8 @@ def game_loop():
                         customer.karen()
                 if customer.order_status == "waiting for food":
                     customer.anger -= 1
-                    if len(prepared_food) < 4:
-                        customer.prepare_time -= 1
                     if customer.anger == 0:
                         customer.karen()
-                    if customer.prepare_time == 0:
-                        index = food_to_prepare.index(customer.order.full_order)
-                        food_to_prepare.pop(index)
-
-                        location = choice(FOOD_SPAWNS)
-                        index = FOOD_SPAWNS.index(location)
-                        FOOD_SPAWNS.pop(index)
-                        prepared_food.append(((customer.order.full_order), customer.order.image, (location[0], location[1])))
-
                         customer.order_status = "food prepared"
                 if customer.order_status == "waiting for food":
                     customer.anger -= 1
