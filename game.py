@@ -374,7 +374,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                         index = FOOD_SPAWNS.index(coordinates)
                         FOOD_SPAWNS.pop(index)
                         food_item.cook_dish(coordinates)
-                        prepared_food.append([f"{food_item.type}_hot", food_item.hot_image, food_item.hot_rect])
+                        prepared_food.append([f"{food_item.type}_hot", food_item.hot_image, food_item.hot_rect, food_item.hot_rect.topleft])
 
             for customer in customers:
                 match customer.order_status:
