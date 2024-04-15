@@ -24,14 +24,15 @@ class NonPlayerCharacter:
         self.player_chair_check(other, self.chair)
         index = CHAIRS.index(self.chair)
         CHAIRS.pop(index)
-        if self.chair[2] == "Right":
-            self.default_image = f"{self.character}Side"
-            self.image = pygame.transform.flip(pygame.image.load(os.path.join(f'images\\NPCs\\{self.character}', f'{self.default_image}.png')), True, False)
-        else:
-            if self.chair[2] == "Left":
+        self.image = []
+        match self.chair[2]:
+            case "Right":
                 self.default_image = f"{self.character}Side"
-            else:
-                self.default_image = f"{self.character}{self.chair[2]}"
+                self.image = pygame.transform.flip(pygame.image.load(os.path.join(f'images\\NPCs\\{self.character}', f'{self.default_image}.png')), True, False)
+            case "Left": self.default_image = f"{self.character}Side"
+            case "Front": self.default_image = f"{self.character}{self.chair[2]}"
+            case "Back": self.default_image = f"{self.character}{self.chair[2]}"
+        if self.image == []:
             self.image = pygame.image.load(os.path.join(f'images\\NPCs\\{self.character}', f'{self.default_image}.png'))
         self.rect = self.image.get_rect()
 
@@ -42,11 +43,10 @@ class NonPlayerCharacter:
 
     def player_chair_check(self, other: Player, chair):
         if pygame.Rect.collidepoint(other.rect, chair[0], chair[1]) == True:
-            self.chair = choice(CHAIRS)
-            print("whoop")
             try: 
+                self.chair = choice(CHAIRS)
                 self.player_chair_check(other, self.chair)
-            except RecursionError:
+            except (RecursionError, IndexError):
                 pass 
                
     def more_angry(self):
@@ -55,14 +55,18 @@ class NonPlayerCharacter:
         self.set_bar()
 
     def set_bar(self):
-        if self.order_status == "ready to order":
-            self.bar = pygame.surface.Surface((self.anger * 6, 5))
-            self.bar.fill((255-(self.anger * 24), 15+(self.anger * 24), 0))
-        elif self.order_status == "waiting for food" or self.order_status == "food prepared":
-            self.bar = pygame.surface.Surface((self.anger * 4, 5))
-            self.bar.fill((255-(self.anger * 16), 15+(self.anger * 16), 0))
-        else:
-            self.bar = pygame.surface.Surface((0, 5))
+        match self.order_status:
+            case "ready to order":
+                self.bar = pygame.surface.Surface((self.anger * 6, 5))
+                self.bar.fill((255-(self.anger * 24), 15+(self.anger * 24), 0))
+            case "waiting for food":
+                self.bar = pygame.surface.Surface((self.anger * 4, 5))
+                self.bar.fill((255-(self.anger * 16), 15+(self.anger * 16), 0))
+            case "food prepared":
+                self.bar = pygame.surface.Surface((self.anger * 4, 5))
+                self.bar.fill((255-(self.anger * 16), 15+(self.anger * 16), 0))
+            case _:
+                self.bar = pygame.surface.Surface((0, 5))
     
         self.bar_rect = self.bar.get_rect()
         self.bar_rect.center = (self.rect.centerx, self.rect.top + 3)

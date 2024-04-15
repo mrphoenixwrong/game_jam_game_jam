@@ -8,10 +8,12 @@ class Player:
         self.x = coordinates[0]
         self.y = coordinates[1]
 
-        self.collision_rect = pygame.surface.Surface((40, 40)).get_rect()
+        self.collision_rect = pygame.surface.Surface((30, 30)).get_rect()
 
         self.rect.topleft = (self.x, self.y)
-        self.collision_rect.topleft = (self.x, self.y+40)
+        self.collision_rect.centerx = self.rect.centerx
+        self.collision_rect.bottom = self.rect.bottom
+
 
         self.facing = "left"
         self.walking = False
