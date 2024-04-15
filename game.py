@@ -197,7 +197,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 # player is throwing away food
                 elif player.has_plate:
                     if player.collision_rect.centerx > 850 and player.collision_rect.centery > 450:
-                        FOOD_SPAWNS.append(held_food[3])
+                        FOOD_SPAWNS.append(held_food[0])
                         held_food = []
                         player.has_plate = False
                         player.set_bar()
