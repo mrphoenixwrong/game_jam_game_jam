@@ -133,6 +133,8 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                 player.turn()
             left = True
 
+        if key_pressed_is[K_w] and key_pressed_is[K_i] and key_pressed_is[K_n]:
+            happiness = customer_goal
         if key_pressed_is[K_RIGHT] or key_pressed_is[K_d] and not (key_pressed_is[K_LEFT] or key_pressed_is[K_a]):
             player.rect.x += player.speed * dt
             player.collision_rect.x += player.speed * dt
@@ -177,7 +179,6 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                             # player is giving customer food
                             elif customer.order_status == "waiting for food" and player.has_plate:
                                 if held_food[0] == customer.order.full_order:
-                                    FOOD_SPAWNS.append(held_food[3])
                                     held_food = []
                                     player.has_plate = False
                                     customer.received_order()
@@ -187,13 +188,24 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                                         RUNNING = False
                                         CONTINUE = True
                 # player is picking up food
-                if not player.has_plate and len(prepared_food) > 0:
+                if not player.has_plate and len(prepared_food) > 0 and player.collision_rect.right > 600:
+                    # sets a default distance
+                    lowest_distance = TILE_SIZE * 2
+                    closest_food = []
                     for food in prepared_food:
-                        if player.collision_rect.centerx > food[2].centerx - TILE_SIZE and player.collision_rect.centerx < food[2].centerx + TILE_SIZE:
-                            held_food = food
-                            index = prepared_food.index(food)
-                            prepared_food.pop(index)
-                            player.pick_up()
+                        # find distance of food from player and compares it to lowest distance
+                        this_distance = (((player.collision_rect.centerx-food[2].centerx)**2)+((player.collision_rect.top-food[2].centery)**2))**(1/2)
+                        # if this is the new lowest distance i.e player is standing close to this food, it becomes the new closest food
+                        if this_distance < lowest_distance:
+                            lowest_distance = this_distance
+                            closest_food = food
+                    # if the player was standing next to a food at all, they pick up the closest food
+                    if closest_food != []:
+                        held_food = closest_food
+                        index = prepared_food.index(closest_food)
+                        prepared_food.pop(index)
+                        FOOD_SPAWNS.append(held_food[3])
+                        player.pick_up()
                 # player is throwing away food
                 elif player.has_plate:
                     if player.collision_rect.centerx > 850 and player.collision_rect.centery > 450:
@@ -365,28 +377,35 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                         prepared_food.append([f"{food_item.type}_hot", food_item.hot_image, food_item.hot_rect])
 
             for customer in customers:
-                if customer.order_status == "just sat":
-                    customer.wait -= 1
-                    if customer.wait == 0:
-                        customer.ready_to_order(can_cold)
-                if customer.order_status == "ready to order":
-                    customer.more_angry()
-                    if customer.anger == 0:
-                        customer.karen()
-                if customer.order_status == "waiting for food":
-                    customer.more_angry()
-                    if customer.anger == 0:
-                        customer.karen()
-                if customer.order_status == "food prepared":
-                    customer.more_angry()
-                    if customer.anger == 0:
-                        customer.karen()
-                if customer.order_status == "too late!" or customer.order_status == "order complete":
-                    if customer.leaving == 0:
-                        customer.stand_up()
-                        index = customers.index(customer)
-                        customers.pop(index)
-                    customer.leaving -= 1
+                match customer.order_status:
+                    case "just sat":
+                        customer.wait -= 1
+                        if customer.wait == 0:
+                            customer.ready_to_order(can_cold)
+                    case "ready to order":
+                        customer.more_angry()
+                        if customer.anger == 0:
+                            customer.karen()
+                    case "waiting for food":
+                        customer.more_angry()
+                        if customer.anger == 0:
+                            customer.karen()
+                    case "food prepared":
+                        customer.more_angry()
+                        if customer.anger == 0:
+                            customer.karen()
+                    case "order_complete":
+                        if customer.leaving == 0:
+                            customer.stand_up()
+                            index = customers.index(customer)
+                            customers.pop(index)
+                        customer.leaving -= 1
+                    case "too late!":
+                        if customer.leaving == 0:
+                            customer.stand_up()
+                            index = customers.index(customer)
+                            customers.pop(index)
+                        customer.leaving -= 1
             if sit_clock >= sit_goal:
                 if len(customers) <= max_customers:
                     customers.append(NonPlayerCharacter(player))
