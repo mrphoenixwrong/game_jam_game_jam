@@ -49,5 +49,6 @@ CHARACTERS = [
     "lucas",
     "homestar",
     "fish",
-    "madness"
+    "madness",
+    "mr"
 ]
