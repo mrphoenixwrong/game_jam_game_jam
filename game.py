@@ -62,7 +62,6 @@ clock = pygame.time.Clock()
 def title_loop():
     title_screen = pygame.image.load(os.path.join("images\\screens", "WSCtitlemenu.png"))
 
-
     start_button = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 20).render(f"START JOB", True, (255, 255, 255))
     start_rect = start_button.get_rect(center=((950-560)/2 + 560, (478-434)/2 + 434))
 
