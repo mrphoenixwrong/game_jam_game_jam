@@ -47,25 +47,25 @@ class NonPlayerCharacter:
                 self.player_chair_check(other, self.chair)
             except RecursionError:
                 pass 
-        if pygame.Rect.collidepoint(other.rect, chair[0]+20, chair[1]+20) == True:
+        if pygame.Rect.collidepoint(other.rect, chair[0]+40, chair[1]+40) == True:
             self.chair = choice(CHAIRS)
             try: 
                 self.player_chair_check(other, self.chair)
             except RecursionError:
                 pass 
-        if pygame.Rect.collidepoint(other.rect, chair[0]-20, chair[1]-20) == True:
+        if pygame.Rect.collidepoint(other.rect, chair[0]-40, chair[1]-40) == True:
             self.chair = choice(CHAIRS)
             try: 
                 self.player_chair_check(other, self.chair)
             except RecursionError:
                 pass 
-        if pygame.Rect.collidepoint(other.rect, chair[0]-20, chair[1]+20) == True:
+        if pygame.Rect.collidepoint(other.rect, chair[0]-40, chair[1]+40) == True:
             self.chair = choice(CHAIRS)
             try: 
                 self.player_chair_check(other, self.chair)
             except RecursionError:
                 pass
-        if pygame.Rect.collidepoint(other.rect, chair[0]+20, chair[1]-20) == True:
+        if pygame.Rect.collidepoint(other.rect, chair[0]+40, chair[1]-40) == True:
             self.chair = choice(CHAIRS)
             try: 
                 self.player_chair_check(other, self.chair)
