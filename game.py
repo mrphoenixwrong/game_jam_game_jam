@@ -66,12 +66,6 @@ def title_loop():
     start_button = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 20).render(f"START JOB", True, (255, 255, 255))
     start_rect = start_button.get_rect(center=((950-560)/2 + 560, (478-434)/2 + 434))
 
-    controls_button = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 20).render(f"CONTROLS", True, (255, 255, 255))
-    controls_rect = controls_button.get_rect(center=((950-560)/2 + 560, (528-486)/2 + 486))
-
-    credits_button = pygame.font.Font('fonts\\DePixelHalbfett.ttf', 20).render(f"CREDITS", True, (255, 255, 255))
-    credits_rect = credits_button.get_rect(center=((950-560)/2 + 560, (584-536)/2 + 536))
-
     pygame.mixer.music.load(os.path.join('music', 'Chilly Menu - Worst Served Cold OST(1).mp3'))
     pygame.mixer.music.play(-1)
 
@@ -86,16 +80,9 @@ def title_loop():
                 mouse = pygame.mouse.get_pos()
                 if 560 <= mouse[0] <= 950 and 434 <= mouse[1] <= 478:
                     return True
-                if 560 <= mouse[0] <= 950 and 486 <= mouse[1] <= 528:
-                    RUNNING, CONTINUE = transition_loop(False, "controls", 0, 0)
-                if 560 <= mouse[0] <= 950 and 536 <= mouse[1] <= 584:
-                    RUNNING, CONTINUE = transition_loop(False, "credits", 0, 0)
 
         window.blit(title_screen, (0,0))
         window.blit(start_button, start_rect)
-        window.blit(controls_button, controls_rect)
-        window.blit(credits_button, credits_rect)
-
         pygame.display.update()
     return CONTINUE
 
@@ -179,26 +166,38 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
             if e_released:
                 e_released = False
                 for customer in customers:
+                    # if player is standing next to customer
                     if player.collision_rect.centerx > customer.rect.centerx - TILE_SIZE and player.collision_rect.centerx < customer.rect.centerx + TILE_SIZE:
                         if player.collision_rect.centery > customer.rect.centery - TILE_SIZE and player.collision_rect.centery < customer.rect.centery + TILE_SIZE + 20:
+                            # player is taking customer's order
                             if customer.order_status == "ready to order":
                                 customer.order_taken()
                                 food_to_prepare.append(customer.order)
                                 customer.set_bar()
+                            # player is giving customer food
                             elif customer.order_status == "waiting for food" and player.has_plate:
                                 if held_food[0] == customer.order.full_order:
+                                    FOOD_SPAWNS.append(held_food[3])
                                     held_food = []
                                     player.has_plate = False
                                     customer.received_order()
                                     player.set_bar()
+                                    happiness += 1
+                                    if happiness == customer_goal:
+                                        RUNNING = False
+                                        CONTINUE = True
+                # player is picking up food
                 if not player.has_plate and len(prepared_food) > 0:
-                    if player.collision_rect.centerx > prepared_food[0][2].centerx - TILE_SIZE and player.collision_rect.centerx < prepared_food[0][2].centerx + TILE_SIZE:
-                        held_food = prepared_food[0]
-                        prepared_food.pop(0)
-                        player.pick_up()
-                        FOOD_SPAWNS.append(held_food[2].topleft)
+                    for food in prepared_food:
+                        if player.collision_rect.centerx > food[2].centerx - TILE_SIZE and player.collision_rect.centerx < food[2].centerx + TILE_SIZE:
+                            held_food = food
+                            index = prepared_food.index(food)
+                            prepared_food.pop(index)
+                            player.pick_up()
+                # player is throwing away food
                 elif player.has_plate:
                     if player.collision_rect.centerx > 850 and player.collision_rect.centery > 450:
+                        FOOD_SPAWNS.append(held_food[3])
                         held_food = []
                         player.has_plate = False
                         player.set_bar()
@@ -362,7 +361,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                     index = FOOD_SPAWNS.index(coordinates)
                     FOOD_SPAWNS.pop(index)
                     food_item.cook_dish(coordinates)
-                    prepared_food.append([f"{food_item.type}_hot", food_item.hot_image, food_item.hot_rect])
+                    prepared_food.append([f"{food_item.type}_hot", food_item.hot_image, food_item.hot_rect, food_item.hot_rect.topleft])
 
             for customer in customers:
                 if customer.order_status == "just sat":
@@ -381,15 +380,11 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                     customer.more_angry()
                     if customer.anger == 0:
                         customer.karen()
-                        print("mad and should leave")
                 if customer.order_status == "too late!" or customer.order_status == "order complete":
                     if customer.leaving == 0:
                         customer.stand_up()
                         index = customers.index(customer)
                         customers.pop(index)
-                        
-                        if customer.order_status == "order complete":
-                            happiness += 1
                     customer.leaving -= 1
             if sit_clock >= sit_goal:
                 if len(customers) <= max_customers:
@@ -503,5 +498,4 @@ def transition_loop(happiness_matters, purpose, happiness, customer_goal):
     if happiness_matters:
         return CONTINUE, RESTART
     else:
-        print(CONTINUE)
         return CONTINUE, CONTINUE
