@@ -393,7 +393,7 @@ def game_loop(day, time_left, rate, max_customers, customer_goal, can_cold):
                         customer.more_angry()
                         if customer.anger == 0:
                             customer.karen()
-                    case "order_complete":
+                    case "order complete":
                         if customer.leaving == 0:
                             customer.stand_up()
                             index = customers.index(customer)
